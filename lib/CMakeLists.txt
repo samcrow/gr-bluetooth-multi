@@ -1,10 +1,10 @@
-# Copyright 2011,2012 Free Software Foundation, Inc.
+# Copyright 2011,2012,2016,2018,2019 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 #
 # GNU Radio is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
+# the Free Software Foundation; either version 3, or (at your option)
 # any later version.
 #
 # GNU Radio is distributed in the hope that it will be useful,
@@ -21,12 +21,10 @@
 # Setup library
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
+
 find_package(BTBB REQUIRED)
 
-include_directories(${Boost_INCLUDE_DIR} ${LIBBTBB_INCLUDE_DIR})
-link_directories(${Boost_LIBRARY_DIRS})
-
-add_library(gnuradio-bluetooth SHARED
+list(APPEND bluetooth_sources
     tun.cc
     multi_block.cc
     multi_hopper_impl.cc
@@ -34,9 +32,36 @@ add_library(gnuradio-bluetooth SHARED
     multi_sniffer_impl.cc
     multi_UAP_impl.cc
     packet_impl.cc
-    piconet_impl.cc )
-target_link_libraries(gnuradio-bluetooth btbb ${Boost_LIBRARIES} ${GNURADIO_RUNTIME_LIBRARIES} ${GNURADIO_ALL_LIBRARIES} ${LIBBTBB_LIBRARIES})
+    piconet_impl.cc
+)
+
+set(bluetooth_sources "${bluetooth_sources}" PARENT_SCOPE)
+if(NOT bluetooth_sources)
+    MESSAGE(STATUS "No C++ sources... skipping lib/")
+    return()
+endif(NOT bluetooth_sources)
+
+find_package(PythonLibs)
+include(GrPython)
+
+add_library(gnuradio-bluetooth SHARED ${bluetooth_sources})
+target_link_libraries(gnuradio-bluetooth gnuradio::gnuradio-runtime
+  gnuradio::gnuradio-blocks
+  gnuradio::gnuradio-filter
+  gnuradio::gnuradio-fft
+  Python::Python
+  )
+target_include_directories(gnuradio-bluetooth
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+    PUBLIC $<INSTALL_INTERFACE:include>
+  )
 set_target_properties(gnuradio-bluetooth PROPERTIES DEFINE_SYMBOL "gnuradio_bluetooth_EXPORTS")
+
+if(APPLE)
+    set_target_properties(gnuradio-bluetooth PROPERTIES
+        INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
+    )
+endif(APPLE)
 
 ########################################################################
 # Install built library files
