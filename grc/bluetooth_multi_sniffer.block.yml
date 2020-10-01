@@ -20,7 +20,7 @@ parameters:
 -   id: tun
     label: TUN Interface 
     dtype: bool
-    default: 'false'
+    default: False
 
 inputs:
 -   domain: stream
