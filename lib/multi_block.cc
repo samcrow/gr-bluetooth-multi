@@ -55,8 +55,8 @@ namespace gr {
       int slots = 1;
       d_samples_per_symbol = sample_rate / SYMBOL_RATE;
       //FIXME make sure that d_samples_per_symbol >= 2 (requirement of clock_recovery_mm_ff)
-      d_samples_per_slot = (int) SYMBOLS_PER_BASIC_RATE_SLOT * d_samples_per_symbol;
-      int history_required = (int) slots * d_samples_per_slot;
+      d_samples_per_slot = (int) (SYMBOLS_PER_BASIC_RATE_SLOT * d_samples_per_symbol);
+      int history_required = (int) (slots * d_samples_per_slot);
 
       /* channel filter coefficients */
       double gain = 1;
@@ -79,8 +79,8 @@ namespace gr {
                                             gr::filter::firdes::WIN_HANN );
 
       /* we will decimate by the largest integer that results in enough samples per symbol */
-      d_ddc_decimation_rate = (int) d_samples_per_symbol / 2;
-      double channel_samples_per_symbol = d_samples_per_symbol / d_ddc_decimation_rate;
+      d_ddc_decimation_rate = (int) (d_samples_per_symbol / 2);
+      double channel_samples_per_symbol = (d_samples_per_symbol / d_ddc_decimation_rate);
 
       set_channels();
 

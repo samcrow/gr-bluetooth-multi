@@ -34,6 +34,8 @@ class my_top_block(gr.top_block):
 						help="number of samples to collect [default=+inf]")
 		parser.add_option("-S", "--sniff", action="store_true", default=False,
 						help="all-piconet sniffer")
+		parser.add_option("-F", "--singlesniff", action="store_true", default=False,
+						help="all-piconet single channel sniffer for sparsdr")
 		parser.add_option("", "--aliased", action="store_true", default=False,
 						help="using a particular aliasing receiver implementation")
 		parser.add_option("-c", "--ddc", type="string", default="0",
@@ -143,6 +145,9 @@ class my_top_block(gr.top_block):
 			# discovering UAPs and clocks as necessary
 			dst = gr_bluetooth.multi_sniffer(options.sample_rate, options.freq,
 											 options.snr, options.wireshark)
+		elif options.singlesniff:
+			# single sniffer for sparsdr
+			dst = gr_bluetooth.single_sniffer(options.sample_rate, options.freq)
 		elif options.lap is None:
 			# print out LAP for every frame detected
 			dst = gr_bluetooth.multi_LAP(options.sample_rate, options.freq,
