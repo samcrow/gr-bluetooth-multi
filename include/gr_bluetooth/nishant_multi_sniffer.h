@@ -41,7 +41,7 @@ namespace gr {
     class GR_BLUETOOTH_API nishant_multi_sniffer : virtual public multi_block
     {
     public:
-       typedef boost::shared_ptr<multi_sniffer> sptr;
+       typedef boost::shared_ptr<nishant_multi_sniffer> sptr;
 
        /*!
         * \brief Return a shared_ptr to a new instance of gr::bluetooth::multi_sniffer.
