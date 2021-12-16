@@ -56,6 +56,3 @@ GR_SWIG_BLOCK_MAGIC2(bluetooth, single_sniffer);
 
 %include "gr_bluetooth/single_multi_sniffer.h"
 GR_SWIG_BLOCK_MAGIC2(bluetooth, single_multi_sniffer);
-
-%include "gr_bluetooth/nishant_multi_sniffer.h"
-GR_SWIG_BLOCK_MAGIC2(bluetooth, nishant_multi_sniffer);

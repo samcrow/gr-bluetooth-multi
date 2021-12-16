@@ -27,9 +27,6 @@ install(FILES
     multi_LAP.h
     multi_sniffer.h
     multi_UAP.h
-    nishant_multi_block.h
-    nishant_multi_sniffer.h
-    nishant_packet.h
     no_filter_sniffer.h
     single_block.h
     single_multi_sniffer.h
