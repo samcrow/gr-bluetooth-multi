@@ -28,7 +28,7 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "packet_impl.h"
+#include "nishant_packet_impl.h"
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
@@ -38,7 +38,7 @@ namespace gr {
 
     // -------------------------------------------------------------------
 
-    packet::packet(char *stream, int length, double freq) :
+    nishant_packet::nishant_packet(char *stream, int length, double freq) :
       d_format( UNKNOWN ),
       d_freq( freq ),
       d_length( 0 ),
@@ -58,30 +58,30 @@ namespace gr {
       d_length = length;
     }
 
-    bool packet::get_whitened()
+    bool nishant_packet::get_whitened()
     {
       return d_whitened;
     }
 
-    void packet::set_whitened(bool whitened)
+    void nishant_packet::set_whitened(bool whitened)
     {
       d_whitened = whitened;
     }
 
-    int packet::get_payload_length()
+    int nishant_packet::get_payload_length()
     {
       return d_payload_length;
     }
 
     /* Reverse the bits in a byte */
-    uint8_t packet::reverse(char byte)
+    uint8_t nishant_packet::reverse(char byte)
     {
       return (byte & 0x80) >> 7 | (byte & 0x40) >> 5 | (byte & 0x20) >> 3 | 
         (byte & 0x10) >> 1 | (byte & 0x08) << 1 | (byte & 0x04) << 3 | 
         (byte & 0x02) << 5 | (byte & 0x01) << 7;
     }
 
-    const uint8_t packet::WHITENING_DATA[] = {
+    const uint8_t nishant_packet::WHITENING_DATA[] = {
       1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 
       1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 
       0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 
@@ -90,7 +90,7 @@ namespace gr {
     };
 
     /* Convert from normal bytes to one-LSB-per-byte format */
-    void packet::convert_to_grformat(uint8_t input, uint8_t *output)
+    void nishant_packet::convert_to_grformat(uint8_t input, uint8_t *output)
     {
       int count;
       for(count = 0; count < 8; count++) {
@@ -100,7 +100,7 @@ namespace gr {
     }
 
     /* Convert some number of bits of an air order array to a host order integer */
-    uint8_t packet::air_to_host8(char *air_order, int bits)
+    uint8_t nishant_packet::air_to_host8(char *air_order, int bits)
     {
       int i;
       uint8_t host_order = 0;
@@ -109,7 +109,7 @@ namespace gr {
       return host_order;
     }
 
-    uint16_t packet::air_to_host16(char *air_order, int bits)
+    uint16_t nishant_packet::air_to_host16(char *air_order, int bits)
     {
       int i;
       uint16_t host_order = 0;
@@ -118,7 +118,7 @@ namespace gr {
       return host_order;
     }
     
-    uint32_t packet::air_to_host32(char *air_order, int bits)
+    uint32_t nishant_packet::air_to_host32(char *air_order, int bits)
     {
       int i;
       uint32_t host_order = 0;
@@ -128,24 +128,24 @@ namespace gr {
     }
 
     /* Convert some number of bits in a host order integer to an air order array */
-    void packet::host_to_air(uint8_t host_order, char *air_order, int bits)
+    void nishant_packet::host_to_air(uint8_t host_order, char *air_order, int bits)
     {
       int i;
       for (i = 0; i < bits; i++)
         air_order[i] = (host_order >> i) & 0x01;
     }
 
-    bool packet::got_payload()
+    bool nishant_packet::got_payload()
     {
       return d_have_payload;
     }
 
-    int packet::get_type()
+    int nishant_packet::get_type()
     {
       return d_packet_type;
     }
 
-    int packet::sniff_packet(char *stream, int stream_length, double freq, air_format& fmt)
+    int nishant_packet::sniff_packet(char *stream, int stream_length, double freq, air_format& fmt)
     {
       int retval = -1;
 
@@ -166,7 +166,7 @@ namespace gr {
     }
 
     /* decode the whole packet */
-    void packet::decode()
+    void nishant_packet::decode()
     {
       d_have_payload = false;
       if (decode_header( )) {
@@ -179,39 +179,39 @@ namespace gr {
 
     /* initialize constant class member arrays */
     /* isn't it silly that this can't be done in the class declaration? */
-    const uint8_t classic_packet::INDICES[] = {
+    const uint8_t nishant_classic_packet::INDICES[] = {
       99,85,17,50,102,58,108,45,92,62,32,118,88,11,80,2,37,69,55,8,20,40,
       74,114,15,106,30,78,53,72,28,26,68,7,39,113,105,77,71,25,84,49,57,
       44,61,117,10,1,123,124,22,125,111,23,42,126,6,112,76,24,48,43,116,0
     };
 
-    const uint8_t classic_packet::PREAMBLE_DISTANCE[] = {
+    const uint8_t nishant_classic_packet::PREAMBLE_DISTANCE[] = {
       2,2,1,2,2,1,2,2,1,2,0,1,2,2,1,2,2,1,2,2,1,0,2,1,2,2,1,2,2,1,2,2
     };
 
-    const uint8_t classic_packet::BARKER_DISTANCE[] = {
+    const uint8_t nishant_classic_packet::BARKER_DISTANCE[] = {
       3,3,3,2,3,2,2,1,2,3,3,3,3,3,3,2,2,3,3,3,3,3,3,2,1,2,2,3,2,3,3,3,3,2,2,
       1,2,1,1,0,3,3,3,2,3,2,2,1,3,3,3,2,3,2,2,1,2,3,3,3,3,3,3,2,2,3,3,3,3,3,
       3,2,1,2,2,3,2,3,3,3,1,2,2,3,2,3,3,3,0,1,1,2,1,2,2,3,3,3,3,2,3,2,2,1,2,
       3,3,3,3,3,3,2,2,3,3,3,3,3,3,2,1,2,2,3,2,3,3,3
     };
 
-    const std::string classic_packet::TYPE_NAMES[] = {
+    const std::string nishant_classic_packet::TYPE_NAMES[] = {
       "NULL", "POLL", "FHS", "DM1", "DH1/2-DH1", "HV1", "HV2/2-EV3", "HV3/EV3/3-EV3",
       "DV/3-DH1", "AUX1", "DM3/2-DH3", "DH3/3-DH3", "EV4/2-EV5", "EV5/3-EV5", 
       "DM5/2-DH5", "DH5/3-DH5"
     };
 
-    classic_packet::sptr
-    classic_packet::make(char *stream, int length)
+    nishant_classic_packet::sptr
+    nishant_classic_packet::make(char *stream, int length)
     {
-      return classic_packet::sptr(new classic_packet_impl(stream, length));
+      return nishant_classic_packet::sptr(new nishant_classic_packet_impl(stream, length));
     }
 
-    classic_packet::sptr
-    classic_packet::make(char *stream, int length, uint32_t clkn, double freq)
+    nishant_classic_packet::sptr
+    nishant_classic_packet::make(char *stream, int length, uint32_t clkn, double freq)
     {
-      classic_packet::sptr pkt = classic_packet::sptr(new classic_packet_impl(stream, length));
+      nishant_classic_packet::sptr pkt = nishant_classic_packet::sptr(new nishant_classic_packet_impl(stream, length));
 
       pkt->d_clkn = clkn;
       pkt->d_freq = freq;
@@ -229,8 +229,8 @@ namespace gr {
     /*
      * The private constructor
      */
-    classic_packet_impl::classic_packet_impl(char *stream, int length)
-      : packet(stream, length)
+    nishant_classic_packet_impl::nishant_classic_packet_impl(char *stream, int length)
+      : nishant_packet(stream, length)
     {
       //FIXME maybe should verify LAP
       d_LAP            = air_to_host32(&d_symbols[38], 24);
@@ -244,7 +244,7 @@ namespace gr {
     }
 
     /* search a symbol stream to find a classic_packet, return index */
-    int classic_packet::sniff_ac(char *stream, int stream_length)
+    int nishant_classic_packet::sniff_ac(char *stream, int stream_length)
     {
       /* Looks for an AC in the stream */
       int count;
@@ -273,12 +273,12 @@ namespace gr {
     /*
      * Our virtual destructor.
      */
-    classic_packet_impl::~classic_packet_impl()
+    nishant_classic_packet_impl::~nishant_classic_packet_impl()
     {
     }
 
     /* A linear feedback shift register */
-    uint8_t *classic_packet::lfsr(uint8_t *data, int length, int k, uint8_t *g)
+    uint8_t *nishant_classic_packet::lfsr(uint8_t *data, int length, int k, uint8_t *g)
     /*
      * A linear feedback shift register
      * used for the syncword in the access code
@@ -309,7 +309,7 @@ namespace gr {
     }
 
     /* Generate Access Code from an LAP */
-    uint8_t *classic_packet::acgen(int LAP)
+    uint8_t *nishant_classic_packet::acgen(int LAP)
     {
       /* Endianness - Assume LAP is MSB first, rest done LSB first */
       uint8_t *retval, count, *cw, *data;
@@ -367,7 +367,7 @@ namespace gr {
     }
 
     /* Decode 1/3 rate FEC, three like symbols in a row */
-    bool classic_packet::unfec13(char *input, char *output, int length)
+    bool nishant_classic_packet::unfec13(char *input, char *output, int length)
     {
       int a, b, c, i;
       int be = 0; /* bit errors */
@@ -386,7 +386,7 @@ namespace gr {
     }
 
     /* Decode 2/3 rate FEC, a (15,10) shortened Hamming code */
-    char *classic_packet::unfec23(char *input, int length)
+    char *nishant_classic_packet::unfec23(char *input, int length)
     {
       /* input points to the input data
        * length is length in bits of the data
@@ -471,7 +471,7 @@ namespace gr {
     }
 
     /* Create an Access Code from LAP and check it against stream */
-    bool classic_packet::check_ac(char *stream, int LAP)
+    bool nishant_classic_packet::check_ac(char *stream, int LAP)
     {
       int count, aclength, biterrors;
       uint8_t *ac, *grdata;
@@ -513,7 +513,7 @@ namespace gr {
     }
 
     /* Remove the whitening from an air order array */
-    void classic_packet_impl::unwhiten(char* input, char* output, int clock, int length, int skip)
+    void nishant_classic_packet_impl::unwhiten(char* input, char* output, int clock, int length, int skip)
     {
       int count, index;
       index = INDICES[clock & 0x3f];
@@ -529,7 +529,7 @@ namespace gr {
     }
 
     /* Pointer to start of packet, length of packet in bits, UAP */
-    uint16_t classic_packet::crcgen(char *payload, int length, int UAP)
+    uint16_t nishant_classic_packet::crcgen(char *payload, int length, int UAP)
     {
       char byte;
       uint16_t reg, count;
@@ -551,40 +551,40 @@ namespace gr {
     }
 
     /* return the packet's LAP */
-    uint32_t classic_packet_impl::get_LAP()
+    uint32_t nishant_classic_packet_impl::get_LAP()
     {
       return d_LAP;
     }
 
     /* return the packet's UAP */
-    uint8_t classic_packet_impl::get_UAP()
+    uint8_t nishant_classic_packet_impl::get_UAP()
     {
       //FIXME throw exception if !d_have_UAP
       return d_UAP;
     }
 
     /* set the packet's UAP */
-    void classic_packet_impl::set_UAP(uint8_t UAP)
+    void nishant_classic_packet_impl::set_UAP(uint8_t UAP)
     {
       d_UAP = UAP;
       d_have_UAP = true;
     }
 
-    void classic_packet_impl::set_NAP(uint16_t NAP)
+    void nishant_classic_packet_impl::set_NAP(uint16_t NAP)
     {
       d_NAP = NAP;
       d_have_NAP = true;
     }
 
     /* return the packet's clock (CLK1-27) */
-    uint32_t classic_packet_impl::get_clock()
+    uint32_t nishant_classic_packet_impl::get_clock()
     {
       //FIXME throw exception if !d_have_clk6
       return d_clock;
     }
 
     /* set the classic_packet's clock (CLK1-27) */
-    void classic_packet_impl::set_clock(uint32_t clock, bool have27)
+    void nishant_classic_packet_impl::set_clock(uint32_t clock, bool have27)
     {
       /* we expect to be called with either 6 or 27 clock bits */
       if (have27)
@@ -597,7 +597,7 @@ namespace gr {
     }
 
     /* extract UAP by reversing the HEC computation */
-    int classic_packet::UAP_from_hec(uint16_t data, uint8_t hec)
+    int nishant_classic_packet::UAP_from_hec(uint16_t data, uint8_t hec)
     {
       int i;
 
@@ -612,7 +612,7 @@ namespace gr {
     }
 
     /* check if the classic_packet's CRC is correct for a given clock (CLK1-6) */
-    int classic_packet_impl::crc_check(int clock)
+    int nishant_classic_packet_impl::crc_check(int clock)
     {
       /*
        * return value of 1 represents inconclusive result (default)
@@ -677,7 +677,7 @@ namespace gr {
     
     
     /* verify the payload CRC */
-    bool classic_packet_impl::payload_crc()
+    bool nishant_classic_packet_impl::payload_crc()
     {
       uint16_t crc;   /* CRC calculated from payload data */
       uint16_t check; /* CRC supplied by packet */
@@ -688,7 +688,7 @@ namespace gr {
       return (crc == check);
     }
 
-    int classic_packet_impl::fhs(int clock)
+    int nishant_classic_packet_impl::fhs(int clock)
     {
       /* skip the access code and packet header */
       char *stream = d_symbols + 126;
@@ -726,7 +726,7 @@ namespace gr {
     }
 
     /* decode payload header, return value indicates success */
-    bool classic_packet_impl::decode_payload_header(char *stream, int clock, int header_bytes, int size, bool fec)
+    bool nishant_classic_packet_impl::decode_payload_header(char *stream, int clock, int header_bytes, int size, bool fec)
     {
       if(header_bytes == 2)
 	{
@@ -769,7 +769,7 @@ namespace gr {
     }
    
     /* DM 1/3/5 packet (and DV)*/
-    int classic_packet_impl::DM(int clock)
+    int nishant_classic_packet_impl::DM(int clock)
     {
       int bitlength;
       /* number of bytes in the payload header */
@@ -833,7 +833,7 @@ namespace gr {
 
     /* DH 1/3/5 packet (and AUX1) */
     /* similar to DM 1/3/5 but without FEC */
-    int classic_packet_impl::DH(int clock)
+    int nishant_classic_packet_impl::DH(int clock)
     {
       int bitlength;
       /* number of bytes in the payload header */
@@ -884,7 +884,7 @@ namespace gr {
       return 1;
     }
 
-    int classic_packet_impl::EV3(int clock)
+    int nishant_classic_packet_impl::EV3(int clock)
     {
       /* skip the access code and packet header */
       char *stream = d_symbols + 126;
@@ -915,7 +915,7 @@ namespace gr {
       return 1;
     }
 
-    int classic_packet_impl::EV4(int clock)
+    int nishant_classic_packet_impl::EV4(int clock)
     {
       char *corrected;
 
@@ -970,7 +970,7 @@ namespace gr {
       return 1;
     }
 
-    int classic_packet_impl::EV5(int clock)
+    int nishant_classic_packet_impl::EV5(int clock)
     {
       /* skip the access code and packet header */
       char *stream = d_symbols + 126;
@@ -1002,7 +1002,7 @@ namespace gr {
     }
 
     /* HV packet type payload parser */
-    int classic_packet_impl::HV(int clock)
+    int nishant_classic_packet_impl::HV(int clock)
     {
       /* skip the access code and packet header */
       char *stream = d_symbols + 126;
@@ -1046,7 +1046,7 @@ namespace gr {
     /* try a clock value (CLK1-6) to unwhiten packet header,
      * sets resultant d_packet_type and d_UAP, returns UAP.
      */
-    uint8_t classic_packet_impl::try_clock(int clock)
+    uint8_t nishant_classic_packet_impl::try_clock(int clock)
     {
       /* skip 72 bit access code */
       char *stream = d_symbols + 72;
@@ -1066,7 +1066,7 @@ namespace gr {
     }
 
     /* decode the packet header */
-    bool classic_packet_impl::decode_header()
+    bool nishant_classic_packet_impl::decode_header()
     {
       /* skip 72 bit access code */
       char *stream = d_symbols + 72;
@@ -1091,7 +1091,7 @@ namespace gr {
       return false;
     }
 
-    void classic_packet_impl::decode_payload()
+    void nishant_classic_packet_impl::decode_payload()
     {
       d_payload_header_length = 0;
 
@@ -1163,7 +1163,7 @@ namespace gr {
     }
 
     /* print packet information */
-    void classic_packet_impl::print()
+    void nishant_classic_packet_impl::print()
     {
       if (d_have_payload) {
         std::cout << TYPE_NAMES[d_packet_type] << std::endl;
@@ -1175,7 +1175,7 @@ namespace gr {
       }
     }
 
-    char *classic_packet_impl::tun_format()
+    char *nishant_classic_packet_impl::tun_format()
     {
       /* include 6 bytes for meta data, 3 bytes for packet header */
       int length = 9 + d_payload_length;
@@ -1205,7 +1205,7 @@ namespace gr {
     }
 
     /* check to see if the packet has a header */
-    bool classic_packet_impl::header_present()
+    bool nishant_classic_packet_impl::header_present()
     {
       /* skip to last bit of sync word */
       char *stream = d_symbols + 67;
@@ -1245,28 +1245,28 @@ namespace gr {
     }
 
     /* extract LAP from FHS payload */
-    uint32_t classic_packet_impl::lap_from_fhs()
+    uint32_t nishant_classic_packet_impl::lap_from_fhs()
     {
       /* caller should check got_payload() and get_type() */
       return air_to_host32(&d_payload[34], 24);
     }
 
     /* extract UAP from FHS payload */
-    uint8_t classic_packet_impl::uap_from_fhs()
+    uint8_t nishant_classic_packet_impl::uap_from_fhs()
     {
       /* caller should check got_payload() and get_type() */
       return air_to_host8(&d_payload[64], 8);
     }
 
     /* extract NAP from FHS payload */
-    uint16_t classic_packet_impl::nap_from_fhs()
+    uint16_t nishant_classic_packet_impl::nap_from_fhs()
     {
       /* caller should check got_payload() and get_type() */
       return air_to_host8(&d_payload[72], 16);
     }
 
     /* extract clock from FHS payload */
-    uint32_t classic_packet_impl::clock_from_fhs()
+    uint32_t nishant_classic_packet_impl::clock_from_fhs()
     {
       /*
        * caller should check got_payload() and get_type()
@@ -1279,13 +1279,13 @@ namespace gr {
 
     // -------------------------------------------------------------------
 
-    le_packet::sptr 
-    le_packet::make(char *stream, int length, double freq) 
+    nishant_le_packet::sptr 
+    nishant_le_packet::make(char *stream, int length, double freq) 
     {
-      return le_packet::sptr(new le_packet_impl(stream, length, freq));
+      return nishant_le_packet::sptr(new nishant_le_packet_impl(stream, length, freq));
     }
 
-    int le_packet::freq2chan(const double freq) {
+    int nishant_le_packet::freq2chan(const double freq) {
       int retval = -1;
       if ((freq >= 2402000000.0) && (freq <= 2480000000.0)) {
         if (::fmod(freq, 2000000.0) < 5000.0) {
@@ -1295,7 +1295,7 @@ namespace gr {
       return retval;
     }
 
-    int le_packet::chan2index(const int chan) {
+    int nishant_le_packet::chan2index(const int chan) {
       int retval = -1;
       if ((chan >= 0) && (chan <= 39)) {
         const int indices[40] = {
@@ -1311,12 +1311,12 @@ namespace gr {
       return retval;
     }
 
-    int le_packet::freq2index(const double freq) {
+    int nishant_le_packet::freq2index(const double freq) {
       int chan = freq2chan( freq );
       return chan2index( chan );
     }
 
-    const uint8_t le_packet::PREAMBLE_DISTANCE[] = {
+    const uint8_t nishant_le_packet::PREAMBLE_DISTANCE[] = {
       4,4,3,4,4,3,4,4,3,4,2,3,4,4,3,4,4,3,4,4,3,2,4,3,4,4,3,4,4,3,4,4,3,4,2,
       3,4,4,3,4,2,3,1,2,3,4,2,3,4,4,3,4,4,3,4,4,3,4,2,3,4,4,3,4,4,3,4,4,3,2,
       4,3,4,4,3,4,4,3,4,4,3,2,4,3,2,1,3,2,4,3,4,4,3,2,4,3,4,4,3,4,4,3,4,4,3,
@@ -1334,7 +1334,7 @@ namespace gr {
       2,3,4,4,3,4,4,3,4,4,3,2,4,3,4,4,3,4,4,3,4,4
     };
 
-    const uint8_t le_packet::ACCESS_ADDRESS_DISTANCE_0[] = {
+    const uint8_t nishant_le_packet::ACCESS_ADDRESS_DISTANCE_0[] = {
       5, 6, 4, 5, 4, 5, 3, 4, 6, 7, 5, 6, 5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3, 
       5, 6, 4, 5, 4, 5, 3, 4, 6, 7, 5, 6, 5, 6, 4, 5, 7, 8, 6, 7, 6, 7, 5, 6, 
       5, 6, 4, 5, 4, 5, 3, 4, 6, 7, 5, 6, 5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3, 
@@ -1348,7 +1348,7 @@ namespace gr {
       3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3
     };
 
-    const uint8_t le_packet::ACCESS_ADDRESS_DISTANCE_1[] = {
+    const uint8_t nishant_le_packet::ACCESS_ADDRESS_DISTANCE_1[] = {
       6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 5, 6, 4, 5, 4, 5, 3, 4, 
       4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3, 
       4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 7, 8, 6, 7, 6, 7, 5, 6, 
@@ -1362,7 +1362,7 @@ namespace gr {
       4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2
     };
 
-    const uint8_t le_packet::ACCESS_ADDRESS_DISTANCE_2[] = {
+    const uint8_t nishant_le_packet::ACCESS_ADDRESS_DISTANCE_2[] = {
       3, 2, 4, 3, 4, 3, 5, 4, 2, 1, 3, 2, 3, 2, 4, 3, 4, 3, 5, 4, 5, 4, 6, 5, 
       3, 2, 4, 3, 4, 3, 5, 4, 4, 3, 5, 4, 5, 4, 6, 5, 3, 2, 4, 3, 4, 3, 5, 4, 
       5, 4, 6, 5, 6, 5, 7, 6, 4, 3, 5, 4, 5, 4, 6, 5, 4, 3, 5, 4, 5, 4, 6, 5, 
@@ -1376,7 +1376,7 @@ namespace gr {
       5, 4, 6, 5, 6, 5, 7, 6, 4, 3, 5, 4, 5, 4, 6, 5
     };
 
-    const uint8_t le_packet::ACCESS_ADDRESS_DISTANCE_3[] = {
+    const uint8_t nishant_le_packet::ACCESS_ADDRESS_DISTANCE_3[] = {
       4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 5, 6, 4, 5, 4, 5, 3, 4, 
       4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3, 
       6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 5, 6, 4, 5, 4, 5, 3, 4, 
@@ -1390,7 +1390,7 @@ namespace gr {
       6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4
     };
 
-    const uint8_t le_packet::ACCESS_HEADER_DISTANCE_LSB[] = {
+    const uint8_t nishant_le_packet::ACCESS_HEADER_DISTANCE_LSB[] = {
       0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 
       2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 
       2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 1, 1, 1, 1, 1, 1, 1, 2, 
@@ -1404,7 +1404,7 @@ namespace gr {
       2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4
     };
 
-    const uint8_t le_packet::ACCESS_HEADER_DISTANCE_MSB[] = {
+    const uint8_t nishant_le_packet::ACCESS_HEADER_DISTANCE_MSB[] = {
       1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 
@@ -1418,7 +1418,7 @@ namespace gr {
       3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
     };
 
-    const uint8_t le_packet::DATA_HEADER_DISTANCE_LSB[] = {
+    const uint8_t nishant_le_packet::DATA_HEADER_DISTANCE_LSB[] = {
       1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 
       1, 0, 0, 0, 1, 0, 0, 0, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 
       2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 
@@ -1432,7 +1432,7 @@ namespace gr {
       4, 3, 3, 3, 4, 3, 3, 3, 4, 3, 3, 3, 4, 3, 3, 3
     };
 
-    const uint8_t le_packet::DATA_HEADER_DISTANCE_MSB[] = {
+    const uint8_t nishant_le_packet::DATA_HEADER_DISTANCE_MSB[] = {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
       0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
@@ -1446,14 +1446,14 @@ namespace gr {
       3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
     };
 
-    const uint8_t le_packet::INDICES[] = {
+    const uint8_t nishant_le_packet::INDICES[] = {
       93, 85, 16, 7, 100, 69, 38, 124, 89, 62, 54, 49, 103, 106, 21, 112, 33, 
       58, 31, 77, 18, 40, 56, 23, 81, 11, 29, 117, 109, 72, 75, 43, 63, 50, 
       107, 113, 86, 8, 70, 125
     };
 
     int
-    le_packet::sniff_aa(char *stream, int stream_length, double freq)
+    nishant_le_packet::sniff_aa(char *stream, int stream_length, double freq)
     {
       /* Looks for AA */
       int count;
@@ -1529,7 +1529,7 @@ namespace gr {
       return -1;
     }
 
-    uint8_t le_packet::air_to_host8_flip(char * rx_order, int bits)
+    uint8_t nishant_le_packet::air_to_host8_flip(char * rx_order, int bits)
     {
       int i;
       uint8_t host_order = 0;
@@ -1538,8 +1538,8 @@ namespace gr {
       return host_order;      
     }
 
-    le_packet_impl::le_packet_impl(char *stream, int length, double freq)
-      : packet(stream, length, freq)
+    nishant_le_packet_impl::nishant_le_packet_impl(char *stream, int length, double freq)
+      : nishant_packet(stream, length, freq)
     {
       d_index = freq2index( freq );
 
@@ -1593,21 +1593,21 @@ namespace gr {
       printf("\n");
     }
 
-    le_packet_impl::~le_packet_impl( )
+    nishant_le_packet_impl::~nishant_le_packet_impl( )
     {
     }
 
-    bool le_packet_impl::decode_header()
+    bool nishant_le_packet_impl::decode_header()
     {
       return false; // FIXME: TODO
     }
     
-    void le_packet_impl::decode_payload()
+    void nishant_le_packet_impl::decode_payload()
     {
       // FIXME: TODO
     }
 
-    uint32_t le_packet_impl::le_crc_calc()
+    uint32_t nishant_le_packet_impl::le_crc_calc()
     {
       uint8_t* buf = d_pdu_full;
       
@@ -1649,7 +1649,7 @@ namespace gr {
     }
     
     /* check if calculated and packet CRC match - Nishant */
-    bool le_packet_impl::le_crc_check()
+    bool nishant_le_packet_impl::le_crc_check()
     {
       if (d_crc == le_crc_calc())
       {
@@ -1660,7 +1660,7 @@ namespace gr {
       }
     }
 
-    void le_packet_impl::print()
+    void nishant_le_packet_impl::print()
     {
       unsigned i;
 
@@ -1755,13 +1755,13 @@ namespace gr {
       }
     }
       
-    char *le_packet_impl::tun_format()
+    char *nishant_le_packet_impl::tun_format()
     {
       return (char*)calloc(256,1); // FIXME: TODO
     }
     
     /* Get channel index - Nishant */
-    bool le_packet_impl::get_index()
+    bool nishant_le_packet_impl::get_index()
     {
 	   if (d_index >= 37)
 		  return true;
@@ -1770,7 +1770,7 @@ namespace gr {
     }
 
     /* Get BD Addr string - Nishant */
-    char *le_packet_impl::get_bd_string(void)
+    char *nishant_le_packet_impl::get_bd_string(void)
     {
 	    char* bd_buffer = new char[20];
 	    sprintf(bd_buffer,"%02x%02x%02x%02x%02x%02x",d_pdu[5],d_pdu[4],d_pdu[3],d_pdu[2],d_pdu[1],d_pdu[0]);
@@ -1789,13 +1789,13 @@ namespace gr {
     }
 
 
-    bool le_packet_impl::header_present()
+    bool nishant_le_packet_impl::header_present()
     {
       return false; // FIXME: TODO
     }
 
     /* check if contact tracing beacon - Nishant */
-    bool le_packet_impl::contact_tracing(void)
+    bool nishant_le_packet_impl::contact_tracing(void)
     {
     	char *data_string = new char[d_PDU_Length*2 + 1];
       unsigned i;

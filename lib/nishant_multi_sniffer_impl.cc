@@ -53,7 +53,7 @@ namespace gr {
      */
     nishant_multi_sniffer_impl::nishant_multi_sniffer_impl(double sample_rate, double center_freq,
                                            double squelch_threshold, bool tun)
-      : multi_block(sample_rate, center_freq, squelch_threshold),
+      : nishant_multi_block(sample_rate, center_freq, squelch_threshold),
         gr::sync_block ("bluetooth multi sniffer block",
                        gr::io_signature::make (1, 1, sizeof (gr_complex)),
                        gr::io_signature::make (0, 0, 0))
@@ -203,7 +203,7 @@ namespace gr {
     {
       /* native (local) clock in 625 us */
       uint32_t clkn = (int) (d_cumulative_count / d_samples_per_slot) & 0x7ffffff;
-      classic_packet::sptr pkt = nishant_classic_packet::make(symbols, len, clkn, freq);
+      nishant_classic_packet::sptr pkt = nishant_classic_packet::make(symbols, len, clkn, freq);
       uint32_t lap = pkt->get_LAP();
 	//printf("Blah\n");
       printf("time %6d, snr=%.1f, channel %2d, LAP %06x ",
@@ -239,7 +239,7 @@ namespace gr {
     void
     nishant_multi_sniffer_impl::aa(char *symbols, int len, double freq, double snr,unsigned* pdu_length,char **filname,int *flag,float **vals)
     {
-      le_packet::sptr pkt = nishant_le_packet::make(symbols, len, freq);
+      nishant_le_packet::sptr pkt = nishant_le_packet::make(symbols, len, freq);
       uint32_t clkn = (int) (d_cumulative_count / d_samples_per_slot) & 0x7ffffff;
 	//printf("samples_per_slot:%f\n",d_samples_per_slot);
       printf("time %6d, snr=%.1f, ", clkn, snr);
@@ -376,7 +376,7 @@ namespace gr {
       printf("Decoding queued packets\n");
 
       while (pkt = pn->dequeue()) {
-        classic_packet::sptr cpkt = boost::dynamic_pointer_cast<nishant_classic_packet>(pkt);
+        nishant_classic_packet::sptr cpkt = boost::dynamic_pointer_cast<nishant_classic_packet>(pkt);
         printf("time %6d, channel %2d, LAP %06x ", cpkt->d_clkn,
                cpkt->get_channel(), cpkt->get_LAP());
         decode(cpkt, pn, false);

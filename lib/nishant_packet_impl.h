@@ -26,13 +26,13 @@
 #ifndef INCLUDED_BLUETOOTH_GR_BLUETOOTH_NISHANT_PACKET_IMPL_H
 #define INCLUDED_BLUETOOTH_GR_BLUETOOTH_NISHANT_PACKET_IMPL_H
 
-#include "gr_bluetooth/packet.h"
+#include "gr_bluetooth/nishant_packet.h"
 #include <string>
 
 namespace gr {
   namespace bluetooth {
 
-    class classic_packet_impl : virtual public classic_packet
+    class nishant_classic_packet_impl : virtual public nishant_classic_packet
     {
     private:
       /* lower address part found in access code */
@@ -91,8 +91,8 @@ namespace gr {
       bool payload_crc();
 
     public:
-      classic_packet_impl(char *stream, int length);
-      ~classic_packet_impl();
+      nishant_classic_packet_impl(char *stream, int length);
+      ~nishant_classic_packet_impl();
 
       /* return the classic_packet's LAP */
       uint32_t get_LAP();
@@ -148,7 +148,7 @@ namespace gr {
       uint32_t clock_from_fhs();
     };
 
-    class le_packet_impl : virtual public le_packet
+    class nishant_le_packet_impl : virtual public nishant_le_packet
     {
     private:
       int      d_channel;
@@ -171,8 +171,8 @@ namespace gr {
       uint8_t d_pdu_full[LE_MAX_PDU_OCTETS+3];
 
     public:
-      le_packet_impl(char *stream, int length, double freq=0.0);
-      ~le_packet_impl();
+      nishant_le_packet_impl(char *stream, int length, double freq=0.0);
+      ~nishant_le_packet_impl();
 
       /* decode the packet header */
       bool decode_header();

@@ -29,7 +29,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "gr_bluetooth/nishant_multi_block.h"
-#include "gr_bluetooth/packet.h"
+#include "gr_bluetooth/nishant_packet.h"
 #include <gnuradio/filter/firdes.h>
 #include <gnuradio/math.h>
 #include <stdio.h>

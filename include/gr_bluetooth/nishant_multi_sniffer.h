@@ -28,7 +28,7 @@
 #define INCLUDED_GR_BLUETOOTH_NISHANT_MULTI_SNIFFER_H
 
 #include <gr_bluetooth/api.h>
-#include "gr_bluetooth/multi_block.h"
+#include "gr_bluetooth/nishant_multi_block.h"
 
 namespace gr {
   namespace bluetooth {
@@ -38,7 +38,7 @@ namespace gr {
      * \ingroup bluetooth
      *
      */
-    class GR_BLUETOOTH_API nishant_multi_sniffer : virtual public multi_block
+    class GR_BLUETOOTH_API nishant_multi_sniffer : virtual public nishant_multi_block
     {
     public:
        typedef boost::shared_ptr<nishant_multi_sniffer> sptr;

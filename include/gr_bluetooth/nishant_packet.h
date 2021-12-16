@@ -49,7 +49,7 @@ namespace gr {
         NUM_BTAF
       } air_format;
 
-      typedef boost::shared_ptr<packet> sptr;
+      typedef boost::shared_ptr<nishant_packet> sptr;
 
     private:
       air_format d_format;
@@ -91,9 +91,9 @@ namespace gr {
     public:
       // -------------------------------------------------------------------
 
-      packet() {}
-      packet(char *stream, int length, double freq=0.0);
-      virtual ~packet( ) {}
+      nishant_packet() {}
+      nishant_packet(char *stream, int length, double freq=0.0);
+      virtual ~nishant_packet( ) {}
 
       // -------------------------------------------------------------------
 
@@ -166,7 +166,7 @@ namespace gr {
       int d_channel;
 
     public:
-      typedef boost::shared_ptr<classic_packet> sptr;
+      typedef boost::shared_ptr<nishant_classic_packet> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of gr::bluetooth::classic_packet.
@@ -295,7 +295,7 @@ namespace gr {
       static const unsigned MAX_OCTETS     = LE_MAX_OCTETS;
       static const unsigned MAX_SYMBOLS    = LE_MAX_SYMBOLS;
 
-      typedef boost::shared_ptr<le_packet> sptr;
+      typedef boost::shared_ptr<nishant_le_packet> sptr;
 
       static sptr make(char *stream, int length, double freq=0.0);
       static int freq2chan(const double freq);
