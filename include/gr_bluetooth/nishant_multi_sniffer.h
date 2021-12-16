@@ -24,8 +24,8 @@
  */
 
 
-#ifndef INCLUDED_GR_BLUETOOTH_MULTI_SNIFFER_H
-#define INCLUDED_GR_BLUETOOTH_MULTI_SNIFFER_H
+#ifndef INCLUDED_GR_BLUETOOTH_NISHANT_MULTI_SNIFFER_H
+#define INCLUDED_GR_BLUETOOTH_NISHANT_MULTI_SNIFFER_H
 
 #include <gr_bluetooth/api.h>
 #include "gr_bluetooth/multi_block.h"
@@ -57,4 +57,4 @@ namespace gr {
   } // namespace bluetooth
 } // namespace gr
 
-#endif /* INCLUDED_GR_BLUETOOTH_MULTI_SNIFFER_H */
+#endif /* INCLUDED_GR_BLUETOOTH_NISHANT_MULTI_SNIFFER_H */

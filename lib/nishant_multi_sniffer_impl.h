@@ -23,11 +23,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_BLUETOOTH_GR_BLUETOOTH_MULTI_SNIFFER_IMPL_H
-#define INCLUDED_BLUETOOTH_GR_BLUETOOTH_MULTI_SNIFFER_IMPL_H
+#ifndef INCLUDED_BLUETOOTH_GR_BLUETOOTH_NISHANT_MULTI_SNIFFER_IMPL_H
+#define INCLUDED_BLUETOOTH_GR_BLUETOOTH_NISHANT_MULTI_SNIFFER_IMPL_H
 
 #include "gr_bluetooth/nishant_multi_sniffer.h"
-#include "gr_bluetooth/packet.h"
+#include "gr_bluetooth/nishant_packet.h"
 #include "gr_bluetooth/piconet.h"
 #include "tun.h"
 #include <map>
@@ -65,20 +65,20 @@ namespace gr {
       void id(uint32_t lap);
 
       /* decode packets with headers */
-      void decode(classic_packet::sptr pkt, basic_rate_piconet::sptr pn,
+      void decode(nishant_classic_packet::sptr pkt, basic_rate_piconet::sptr pn,
                   bool first_run);
-      void decode(le_packet::sptr pkt, low_energy_piconet::sptr pn);
+      void decode(nishant_le_packet::sptr pkt, low_energy_piconet::sptr pn);
 
       /* work on UAP/CLK1-6 discovery */
-      void discover(classic_packet::sptr pkt, basic_rate_piconet::sptr pn);
-      void discover(le_packet::sptr pkt, low_energy_piconet::sptr pn);
+      void discover(nishant_classic_packet::sptr pkt, basic_rate_piconet::sptr pn);
+      void discover(nishant_le_packet::sptr pkt, low_energy_piconet::sptr pn);
 
       /* decode stored packets */
       void recall(basic_rate_piconet::sptr pn);
       void recall(low_energy_piconet::sptr pn);
 
       /* pull information out of FHS packet */
-      void fhs(classic_packet::sptr pkt);
+      void fhs(nishant_classic_packet::sptr pkt);
 
     public:
       nishant_multi_sniffer_impl(double sample_rate, double center_freq, double squelch_threshold, bool tun);
@@ -93,4 +93,4 @@ namespace gr {
   } // namespace bluetooth
 } // namespace gr
 
-#endif /* INCLUDED_BLUETOOTH_GR_BLUETOOTH_MULTI_SNIFFER_IMPL_H */
+#endif /* INCLUDED_BLUETOOTH_GR_BLUETOOTH_NISHANT_MULTI_SNIFFER_IMPL_H */

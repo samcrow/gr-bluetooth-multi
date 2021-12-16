@@ -126,7 +126,7 @@ namespace gr {
             /* look for multiple packets in this slot */
             while (limit >= 0) {
               /* index to start of packet */
-              int i = classic_packet::sniff_ac(symp, limit);
+              int i = nishant_classic_packet::sniff_ac(symp, limit);
               if (i >= 0) {
                 int step = i + SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE;
                 ac(&symp[i], len - i, freq, snr);
@@ -148,7 +148,7 @@ namespace gr {
 	    //printf("limit=%d",limit);
             int step_counter = 0;
 	    while (limit >= 0) {
-              int i = le_packet::sniff_aa(symp, limit, freq);
+              int i = nishant_le_packet::sniff_aa(symp, limit, freq);
 	      //printf("i=%d\n",i);
               if (i >= 0) {
                 int step = i + SYMBOLS_PER_LOW_ENERGY_PREAMBLE_AA;
@@ -203,7 +203,7 @@ namespace gr {
     {
       /* native (local) clock in 625 us */
       uint32_t clkn = (int) (d_cumulative_count / d_samples_per_slot) & 0x7ffffff;
-      classic_packet::sptr pkt = classic_packet::make(symbols, len, clkn, freq);
+      classic_packet::sptr pkt = nishant_classic_packet::make(symbols, len, clkn, freq);
       uint32_t lap = pkt->get_LAP();
 	//printf("Blah\n");
       printf("time %6d, snr=%.1f, channel %2d, LAP %06x ",
@@ -239,7 +239,7 @@ namespace gr {
     void
     nishant_multi_sniffer_impl::aa(char *symbols, int len, double freq, double snr,unsigned* pdu_length,char **filname,int *flag,float **vals)
     {
-      le_packet::sptr pkt = le_packet::make(symbols, len, freq);
+      le_packet::sptr pkt = nishant_le_packet::make(symbols, len, freq);
       uint32_t clkn = (int) (d_cumulative_count / d_samples_per_slot) & 0x7ffffff;
 	//printf("samples_per_slot:%f\n",d_samples_per_slot);
       printf("time %6d, snr=%.1f, ", clkn, snr);
@@ -303,7 +303,7 @@ namespace gr {
     }
 
     /* decode packets with headers */
-    void nishant_multi_sniffer_impl::decode(classic_packet::sptr pkt,
+    void nishant_multi_sniffer_impl::decode(nishant_classic_packet::sptr pkt,
                                     basic_rate_piconet::sptr pn,
                                     bool first_run)
     {
@@ -346,13 +346,13 @@ namespace gr {
       }
     }
 
-    void nishant_multi_sniffer_impl::decode(le_packet::sptr pkt,
+    void nishant_multi_sniffer_impl::decode(nishant_le_packet::sptr pkt,
                                     low_energy_piconet::sptr pn) {
 
     }
 
     /* work on UAP/CLK1-6 discovery */
-    void nishant_multi_sniffer_impl::discover(classic_packet::sptr pkt,
+    void nishant_multi_sniffer_impl::discover(nishant_classic_packet::sptr pkt,
                                       basic_rate_piconet::sptr pn)
     {
       printf("working on UAP/CLK1-6\n");
@@ -365,18 +365,18 @@ namespace gr {
         recall(pn);
     }
 
-    void nishant_multi_sniffer_impl::discover(le_packet::sptr pkt,
+    void nishant_multi_sniffer_impl::discover(nishant_le_packet::sptr pkt,
                                       low_energy_piconet::sptr pn) {
     }
 
     /* decode stored packets */
     void nishant_multi_sniffer_impl::recall(basic_rate_piconet::sptr pn)
     {
-      packet::sptr pkt;
+      nishant_packet::sptr pkt;
       printf("Decoding queued packets\n");
 
       while (pkt = pn->dequeue()) {
-        classic_packet::sptr cpkt = boost::dynamic_pointer_cast<classic_packet>(pkt);
+        classic_packet::sptr cpkt = boost::dynamic_pointer_cast<nishant_classic_packet>(pkt);
         printf("time %6d, channel %2d, LAP %06x ", cpkt->d_clkn,
                cpkt->get_channel(), cpkt->get_LAP());
         decode(cpkt, pn, false);
@@ -389,7 +389,7 @@ namespace gr {
     }
 
     /* pull information out of FHS packet */
-    void nishant_multi_sniffer_impl::fhs(classic_packet::sptr pkt)
+    void nishant_multi_sniffer_impl::fhs(nishant_classic_packet::sptr pkt)
     {
       uint32_t lap;
       uint8_t uap;

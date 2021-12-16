@@ -33,6 +33,7 @@ list(APPEND bluetooth_sources
     multi_UAP_impl.cc
     nishant_multi_block.cc
     nishant_multi_sniffer_impl.cc
+    nishant_packet_impl.cc
     no_filter_sniffer_impl.cc
     single_sniffer_impl.cc
     packet_impl.cc
