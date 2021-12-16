@@ -25,8 +25,8 @@
 #ifndef INCLUDED_GR_BLUETOOTH_SINGLE_BLOCK_H
 #define INCLUDED_GR_BLUETOOTH_SINGLE_BLOCK_H
 
-#include <gnuradio/filter/fir_filter_ccf.h>
-#include <gnuradio/filter/freq_xlating_fir_filter_ccf.h>
+#include <gnuradio/filter/fir_filter_blk.h>
+#include <gnuradio/filter/freq_xlating_fir_filter.h>
 #include <gnuradio/filter/mmse_fir_interpolator_ff.h>
 #include <gnuradio/sync_block.h>
 #include <gr_bluetooth/api.h>
@@ -95,7 +95,7 @@ protected:
     /** Taps for low-pass filter */
     std::vector<float> d_channel_filter;
     /** Low-pass filter used to select the channel */
-    gr::filter::fir_filter_ccf::sptr d_channel_ddc;
+    gr::filter::fir_filter_blk<gr_complex, gr_complex, float>::sptr d_channel_ddc;
 
     /* noise power filter coefficients */
     double d_noise_filter_width;
