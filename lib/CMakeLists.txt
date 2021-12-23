@@ -32,7 +32,6 @@ list(APPEND bluetooth_sources
     multi_sniffer_impl.cc
     multi_UAP_impl.cc
     no_filter_sniffer_impl.cc
-    single_sniffer_impl.cc
     packet_impl.cc
     piconet_impl.cc
     single_block.cc
@@ -53,8 +52,6 @@ target_link_libraries(gnuradio-bluetooth gnuradio::gnuradio-runtime
   gnuradio::gnuradio-blocks
   gnuradio::gnuradio-filter
   gnuradio::gnuradio-fft
-  gnuradio::gnuradio-analog
-  gnuradio::gnuradio-digital
   Python::Python
   )
 target_include_directories(gnuradio-bluetooth
