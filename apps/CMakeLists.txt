@@ -22,6 +22,5 @@ include(GrPython)
 
 GR_PYTHON_INSTALL(
     PROGRAMS
-    btrx
     DESTINATION bin
 )

@@ -43,8 +43,8 @@ include(GrPython)
 set(GR_SWIG_INCLUDE_DIRS $<TARGET_PROPERTY:gnuradio::runtime_swig,INTERFACE_INCLUDE_DIRECTORIES>)
 set(GR_SWIG_TARGET_DEPS gnuradio::runtime_swig)
 
-set(GR_SWIG_LIBRARIES gnuradio-bluetooth btbb)
-set(GR_SWIG_DOC_FILE ${CMAKE_CURRENT_BINARY_DIR}/gr_bluetooth_swig_doc.i)
+set(GR_SWIG_LIBRARIES gnuradio-bluetooth-nishant btbb)
+set(GR_SWIG_DOC_FILE ${CMAKE_CURRENT_BINARY_DIR}/gr_bluetooth_nishant_swig_doc.i)
 set(GR_SWIG_DOC_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
 GR_SWIG_MAKE(gr_bluetooth_nishant_swig gr_bluetooth_nishant_swig.i)
