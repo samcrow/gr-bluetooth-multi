@@ -27,9 +27,6 @@ install(FILES
     multi_LAP.h
     multi_sniffer.h
     multi_UAP.h
-    no_filter_sniffer.h
-    single_block.h
-    single_multi_sniffer.h
     packet.h
-    piconet.h DESTINATION include/gr_bluetooth
+    piconet.h DESTINATION include/gr_bluetooth_nishant
 )

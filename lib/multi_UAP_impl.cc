@@ -32,7 +32,7 @@
 #include <stdio.h>
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
     multi_UAP::sptr
     multi_UAP::make(double sample_rate, double center_freq, double squelch_threshold, int LAP)

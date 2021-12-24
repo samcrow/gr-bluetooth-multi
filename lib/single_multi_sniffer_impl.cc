@@ -31,7 +31,7 @@
 #include <gnuradio/io_signature.h>
 
 namespace gr {
-namespace bluetooth {
+namespace bluetooth_nishant {
 
 namespace {
 void error_out(const char* s)

@@ -26,14 +26,14 @@
 #ifndef INCLUDED_BLUETOOTH_GR_BLUETOOTH_MULTI_UAP_IMPL_H
 #define INCLUDED_BLUETOOTH_GR_BLUETOOTH_MULTI_UAP_IMPL_H
 
-#include "gr_bluetooth/multi_UAP.h"
+#include "gr_bluetooth_nishant/multi_UAP.h"
 extern "C"
 {
   #include <btbb.h>
 }
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
     class multi_UAP_impl : virtual public multi_UAP
     {

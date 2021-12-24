@@ -47,19 +47,19 @@ set(GR_SWIG_LIBRARIES gnuradio-bluetooth btbb)
 set(GR_SWIG_DOC_FILE ${CMAKE_CURRENT_BINARY_DIR}/gr_bluetooth_swig_doc.i)
 set(GR_SWIG_DOC_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
-GR_SWIG_MAKE(gr_bluetooth_swig gr_bluetooth_swig.i)
+GR_SWIG_MAKE(gr_bluetooth_nishant_swig gr_bluetooth_nishant_swig.i)
 
 ########################################################################
 # Install the build swig module
 ########################################################################
-GR_SWIG_INSTALL(TARGETS gr_bluetooth_swig DESTINATION ${GR_PYTHON_DIR}/gr_bluetooth)
+GR_SWIG_INSTALL(TARGETS gr_bluetooth_nishant_swig DESTINATION ${GR_PYTHON_DIR}/gr_bluetooth_nishant)
 
 ########################################################################
 # Install swig .i files for development
 ########################################################################
 install(
     FILES
-    gr_bluetooth_swig.i
-    ${CMAKE_CURRENT_BINARY_DIR}/gr_bluetooth_swig_doc.i
-    DESTINATION ${GR_INCLUDE_DIR}/gr_bluetooth/swig
+    gr_bluetooth_nishant_swig.i
+    ${CMAKE_CURRENT_BINARY_DIR}/gr_bluetooth_nishant_swig_doc.i
+    DESTINATION ${GR_INCLUDE_DIR}/gr_bluetooth_nishant/swig
 )

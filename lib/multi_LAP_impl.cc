@@ -34,7 +34,7 @@ extern "C"
 #include <stdio.h>
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
     multi_LAP::sptr
     multi_LAP::make(double sample_rate, double center_freq, double squelch_threshold)

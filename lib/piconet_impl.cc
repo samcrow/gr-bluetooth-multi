@@ -32,7 +32,7 @@
 #include <stdio.h>
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
     /* add a packet to the queue */
     void piconet::enqueue(packet::sptr pkt) {

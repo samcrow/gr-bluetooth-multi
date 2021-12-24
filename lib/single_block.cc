@@ -27,8 +27,8 @@
 #include "config.h"
 #endif
 
-#include "gr_bluetooth/packet.h"
-#include "gr_bluetooth/single_block.h"
+#include "gr_bluetooth_nishant/packet.h"
+#include "gr_bluetooth_nishant/single_block.h"
 #include <gnuradio/blocks/complex_to_mag_squared.h>
 #include <gnuradio/filter/firdes.h>
 #include <gnuradio/io_signature.h>
@@ -36,7 +36,7 @@
 #include <cstdio>
 
 namespace gr {
-namespace bluetooth {
+namespace bluetooth_nishant {
 single_block::single_block(double sample_rate,
                            double center_freq,
                            double squelch_threshold)

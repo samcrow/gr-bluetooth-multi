@@ -26,11 +26,11 @@
 #ifndef INCLUDED_BLUETOOTH_GR_BLUETOOTH_PACKET_IMPL_H
 #define INCLUDED_BLUETOOTH_GR_BLUETOOTH_PACKET_IMPL_H
 
-#include "gr_bluetooth/packet.h"
+#include "gr_bluetooth_nishant/packet.h"
 #include <string>
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
     class classic_packet_impl : virtual public classic_packet
     {

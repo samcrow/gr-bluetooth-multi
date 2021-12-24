@@ -34,7 +34,7 @@
 #include <iostream>
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
     // -------------------------------------------------------------------
 

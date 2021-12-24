@@ -27,14 +27,14 @@
 #ifndef INCLUDED_GR_BLUETOOTH_PACKET_H
 #define INCLUDED_GR_BLUETOOTH_PACKET_H
 
-#include <gr_bluetooth/api.h>
+#include <gr_bluetooth_nishant/api.h>
 #include <gnuradio/sync_block.h>
 #include <string>
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
-    class GR_BLUETOOTH_API packet
+    class GR_BLUETOOTH_NISHANT_API packet
     {
       friend class classic_packet;
       friend class classic_packet_impl;
@@ -160,7 +160,7 @@ namespace gr {
      * \brief <+description of block+>
      * \ingroup gr_bluetooth
      */
-    class GR_BLUETOOTH_API classic_packet : virtual public packet
+    class GR_BLUETOOTH_NISHANT_API classic_packet : virtual public packet
     {
     private:
       int d_channel;
@@ -288,7 +288,7 @@ namespace gr {
 #define LE_MAX_OCTETS     (1+4+LE_MAX_PDU_OCTETS+3)
 #define LE_MAX_SYMBOLS    (8*LE_MAX_OCTETS)
 
-    class GR_BLUETOOTH_API le_packet : virtual public packet
+    class GR_BLUETOOTH_NISHANT_API le_packet : virtual public packet
     {
     public:
       static const unsigned MAX_PDU_OCTETS = LE_MAX_PDU_OCTETS;

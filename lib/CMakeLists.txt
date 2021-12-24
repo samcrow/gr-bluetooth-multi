@@ -47,21 +47,21 @@ endif(NOT bluetooth_sources)
 find_package(PythonLibs)
 include(GrPython)
 
-add_library(gnuradio-bluetooth SHARED ${bluetooth_sources})
-target_link_libraries(gnuradio-bluetooth gnuradio::gnuradio-runtime
+add_library(gnuradio-bluetooth-nishant SHARED ${bluetooth_sources})
+target_link_libraries(gnuradio-bluetooth-nishant gnuradio::gnuradio-runtime
   gnuradio::gnuradio-blocks
   gnuradio::gnuradio-filter
   gnuradio::gnuradio-fft
   Python::Python
   )
-target_include_directories(gnuradio-bluetooth
+target_include_directories(gnuradio-bluetooth-nishant
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>
   )
-set_target_properties(gnuradio-bluetooth PROPERTIES DEFINE_SYMBOL "gnuradio_bluetooth_EXPORTS")
+set_target_properties(gnuradio-bluetooth-nishant PROPERTIES DEFINE_SYMBOL "gnuradio_bluetooth_nishant_EXPORTS")
 
 if(APPLE)
-    set_target_properties(gnuradio-bluetooth PROPERTIES
+    set_target_properties(gnuradio-bluetooth-nishant PROPERTIES
         INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
     )
 endif(APPLE)
@@ -69,7 +69,7 @@ endif(APPLE)
 ########################################################################
 # Install built library files
 ########################################################################
-install(TARGETS gnuradio-bluetooth
+install(TARGETS gnuradio-bluetooth-nishant
     LIBRARY DESTINATION lib${LIB_SUFFIX} # .so/.dylib file
     ARCHIVE DESTINATION lib${LIB_SUFFIX} # .lib file
     RUNTIME DESTINATION bin              # .dll file

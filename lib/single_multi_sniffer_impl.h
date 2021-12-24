@@ -26,14 +26,14 @@
 #ifndef INCLUDED_BLUETOOTH_GR_BLUETOOTH_SINGLE_MULTI_SNIFFER_IMPL_H
 #define INCLUDED_BLUETOOTH_GR_BLUETOOTH_SINGLE_MULTI_SNIFFER_IMPL_H
 
-#include "gr_bluetooth/packet.h"
-#include "gr_bluetooth/piconet.h"
-#include "gr_bluetooth/single_multi_sniffer.h"
+#include "gr_bluetooth_nishant/packet.h"
+#include "gr_bluetooth_nishant/piconet.h"
+#include "gr_bluetooth_nishant/single_multi_sniffer.h"
 #include "tun.h"
 #include <map>
 
 namespace gr {
-namespace bluetooth {
+namespace bluetooth_nishant {
 
 class single_multi_sniffer_impl : virtual public single_multi_sniffer
 {

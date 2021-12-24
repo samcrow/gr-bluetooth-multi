@@ -31,7 +31,7 @@
 #include "multi_hopper_impl.h"
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
     multi_hopper::sptr
     multi_hopper::make(double sample_rate, double center_freq, double squelch_threshold, int LAP, bool aliased, bool tun)

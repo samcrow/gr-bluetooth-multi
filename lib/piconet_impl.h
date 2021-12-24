@@ -26,12 +26,12 @@
 #ifndef INCLUDED_BLUETOOTH_GR_BLUETOOTH_PICONET_IMPL_H
 #define INCLUDED_BLUETOOTH_GR_BLUETOOTH_PICONET_IMPL_H
 
-#include "gr_bluetooth/piconet.h"
-#include "gr_bluetooth/packet.h"
+#include "gr_bluetooth_nishant/piconet.h"
+#include "gr_bluetooth_nishant/packet.h"
 #include <vector>
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
     class basic_rate_piconet_impl : public basic_rate_piconet {
     private:

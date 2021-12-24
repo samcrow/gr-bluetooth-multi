@@ -25,19 +25,19 @@
 #ifndef INCLUDED_GR_BLUETOOTH_MULTI_BLOCK_H
 #define INCLUDED_GR_BLUETOOTH_MULTI_BLOCK_H
 
-#include <gr_bluetooth/api.h>
+#include <gr_bluetooth_nishant/api.h>
 #include <gnuradio/sync_block.h>
 #include <gnuradio/filter/mmse_fir_interpolator_ff.h>
 #include <gnuradio/filter/freq_xlating_fir_filter.h>
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
     /*!
      * \brief Bluetooth multi-channel parent class.
      * \ingroup bluetooth
      */
-    class  GR_BLUETOOTH_API multi_block : virtual public gr::sync_block
+    class  GR_BLUETOOTH_NISHANT_API multi_block : virtual public gr::sync_block
     {
     protected:
       multi_block() {} // to allow for pure virtual

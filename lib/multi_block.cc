@@ -28,15 +28,15 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "gr_bluetooth/multi_block.h"
-#include "gr_bluetooth/packet.h"
+#include "gr_bluetooth_nishant/multi_block.h"
+#include "gr_bluetooth_nishant/packet.h"
 #include <gnuradio/filter/firdes.h>
 #include <gnuradio/math.h>
 #include <stdio.h>
 #include <gnuradio/blocks/complex_to_mag_squared.h>
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
     multi_block::multi_block(double sample_rate, double center_freq, double squelch_threshold)
       : gr::sync_block ("bluetooth multi block",
                        gr::io_signature::make (1, 1, sizeof (gr_complex)),

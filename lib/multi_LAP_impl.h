@@ -24,10 +24,10 @@
 #ifndef INCLUDED_BLUETOOTH_GR_BLUETOOTH_MULTI_LAP_IMPL_H
 #define INCLUDED_BLUETOOTH_GR_BLUETOOTH_MULTI_LAP_IMPL_H
 
-#include "gr_bluetooth/multi_LAP.h"
+#include "gr_bluetooth_nishant/multi_LAP.h"
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
     class multi_LAP_impl : virtual public multi_LAP
     {

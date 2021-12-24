@@ -22,7 +22,7 @@
 # Project setup
 ########################################################################
 cmake_minimum_required(VERSION 3.8)
-project(gr-bluetooth CXX C)
+project(gr-bluetooth-nishant CXX C)
 enable_testing()
 
 # Install to PyBOMBS target prefix if defined
@@ -94,8 +94,8 @@ if(NOT CMAKE_MODULES_DIR)
   set(CMAKE_MODULES_DIR lib${LIB_SUFFIX}/cmake)
 endif(NOT CMAKE_MODULES_DIR)
 
-set(GR_INCLUDE_DIR      include/gr_bluetooth)
-set(GR_CMAKE_DIR        ${CMAKE_MODULES_DIR}/bluetooth)
+set(GR_INCLUDE_DIR      include/gr_bluetooth_nishant)
+set(GR_CMAKE_DIR        ${CMAKE_MODULES_DIR}/bluetooth_nishant)
 set(GR_PKG_DATA_DIR     ${GR_DATA_DIR}/${CMAKE_PROJECT_NAME})
 set(GR_PKG_DOC_DIR      ${GR_DOC_DIR}/${CMAKE_PROJECT_NAME})
 set(GR_PKG_CONF_DIR     ${GR_CONF_DIR}/${CMAKE_PROJECT_NAME}/conf.d)
@@ -159,7 +159,7 @@ add_custom_target(uninstall
 ########################################################################
 # Add subdirectories
 ########################################################################
-add_subdirectory(include/gr_bluetooth)
+add_subdirectory(include/gr_bluetooth_nishant)
 add_subdirectory(lib)
 add_subdirectory(apps)
 add_subdirectory(docs)
@@ -171,6 +171,6 @@ add_subdirectory(grc)
 # Install cmake search helper for this library
 ########################################################################
 
-install(FILES cmake/Modules/bluetoothConfig.cmake
-    DESTINATION ${CMAKE_MODULES_DIR}/bluetooth
+install(FILES cmake/Modules/bluetooth_nishantConfig.cmake
+    DESTINATION ${CMAKE_MODULES_DIR}/bluetooth_nishant
 )

@@ -31,7 +31,7 @@ endif()
 GR_PYTHON_INSTALL(
     FILES
     __init__.py
-    DESTINATION ${GR_PYTHON_DIR}/gr_bluetooth
+    DESTINATION ${GR_PYTHON_DIR}/gr_bluetooth_nishant
 )
 
 ########################################################################
@@ -39,6 +39,6 @@ GR_PYTHON_INSTALL(
 ########################################################################
 include(GrTest)
 
-set(GR_TEST_TARGET_DEPS gnuradio-bluetooth)
+set(GR_TEST_TARGET_DEPS gnuradio-bluetooth-nishant)
 set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
-GR_ADD_TEST(qa_gr_bluetooth_multi_sniffer ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_gr_bluetooth_multi_sniffer.py)
+GR_ADD_TEST(qa_gr_bluetooth_nishant_multi_sniffer ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_gr_bluetooth_nishant_multi_sniffer.py)

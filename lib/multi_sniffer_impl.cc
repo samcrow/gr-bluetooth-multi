@@ -31,7 +31,7 @@
 #include "multi_sniffer_impl.h"
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
 	void error_out(const char *s)
 	{

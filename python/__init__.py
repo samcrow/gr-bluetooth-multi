@@ -19,12 +19,12 @@
 # The presence of this file turns this directory into a Python package
 
 '''
-This is the GNU Radio BLUETOOTH module. Place your Python package
+This is the GNU Radio BLUETOOTH Nishant module. Place your Python package
 description here (python/__init__.py).
 '''
 from __future__ import unicode_literals
 
-from .gr_bluetooth_swig import *
+from .gr_bluetooth_nishant_swig import *
 
 # import any pure python here
 #

@@ -26,12 +26,12 @@
 #ifndef INCLUDED_BLUETOOTH_GR_BLUETOOTH_MULTI_HOPPER_IMPL_H
 #define INCLUDED_BLUETOOTH_GR_BLUETOOTH_MULTI_HOPPER_IMPL_H
 
-#include "gr_bluetooth/multi_hopper.h"
-#include "gr_bluetooth/piconet.h"
+#include "gr_bluetooth_nishant/multi_hopper.h"
+#include "gr_bluetooth_nishant/piconet.h"
 #include "tun.h"
 
 namespace gr {
-  namespace bluetooth {
+  namespace bluetooth_nishant {
 
     class multi_hopper_impl : virtual public multi_hopper
     {

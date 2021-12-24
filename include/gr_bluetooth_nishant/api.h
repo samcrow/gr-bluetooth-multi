@@ -19,15 +19,15 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_GR_BLUETOOTH_API_H
-#define INCLUDED_GR_BLUETOOTH_API_H
+#ifndef INCLUDED_GR_BLUETOOTH_NISHANT_API_H
+#define INCLUDED_GR_BLUETOOTH_NISHANT_API_H
 
 #include <gnuradio/attributes.h>
 
-#ifdef gnuradio_bluetooth_EXPORTS
-#  define GR_BLUETOOTH_API __GR_ATTR_EXPORT
+#ifdef gnuradio_bluetooth_nishant_EXPORTS
+#  define GR_BLUETOOTH_NISHANT_API __GR_ATTR_EXPORT
 #else
-#  define GR_BLUETOOTH_API __GR_ATTR_IMPORT
+#  define GR_BLUETOOTH_NISHANT_API __GR_ATTR_IMPORT
 #endif
 
-#endif /* INCLUDED_GR_BLUETOOTH_API_H */
+#endif /* INCLUDED_GR_BLUETOOTH_NISHANT_API_H */

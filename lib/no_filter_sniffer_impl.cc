@@ -31,7 +31,7 @@
 #include "no_filter_sniffer_impl.h"
 
 namespace gr {
-namespace bluetooth {
+namespace bluetooth_nishant {
 
     no_filter_sniffer::sptr no_filter_sniffer::make(double sample_rate, double center_freq)
     {
