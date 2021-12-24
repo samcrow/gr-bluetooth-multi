@@ -15,7 +15,7 @@ BASE_NAME = BASE_NAME.make;
 #endif
 
 //load generated python docstrings
-%include "gr_bluetooth_swig_doc.i"
+%include "gr_bluetooth_nishant_swig_doc.i"
 
 %{
 #include "gr_bluetooth_nishant/packet.h"
