@@ -1,22 +1,22 @@
 /* -*- c++ -*- */
-/* 
+/*
  * Copyright 2013 Christopher D. Kilgour
  * Copyright 2008, 2009 Dominic Spill, Michael Ossmann
  * Copyright 2007 Dominic Spill
  * Copyright 2005, 2006 Free Software Foundation, Inc.
- * 
+ *
  * This file is part of gr-bluetooth
- * 
+ *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
@@ -24,8 +24,8 @@
  */
 
 
-#ifndef INCLUDED_GR_BLUETOOTH_PACKET_H
-#define INCLUDED_GR_BLUETOOTH_PACKET_H
+#ifndef INCLUDED_GR_BLUETOOTH_NISHANT_PACKET_H
+#define INCLUDED_GR_BLUETOOTH_NISHANT_PACKET_H
 
 #include <gr_bluetooth_nishant/api.h>
 #include <gnuradio/sync_block.h>
@@ -40,7 +40,7 @@ namespace gr {
       friend class classic_packet_impl;
       friend class le_packet;
       friend class le_packet_impl;
-      
+
     public:
       typedef enum {
         UNKNOWN = 0,
@@ -62,7 +62,7 @@ namespace gr {
       //FIXME maybe this should be a vector so we can grow it only to the size
       //needed and later shrink it if we find we have more symbols than necessary
       char d_symbols[MAX_SYMBOLS];
-      
+
       /* packet type */
       int d_packet_type;
 
@@ -82,7 +82,7 @@ namespace gr {
        * problematic in the short run.
        */
       char d_payload[2744];
-      
+
       /* is the packet whitened? */
       bool d_whitened;
 
@@ -113,7 +113,7 @@ namespace gr {
       static uint16_t air_to_host16(char *air_order, int bits);
       static uint32_t air_to_host32(char *air_order, int bits);
       // hmmm, maybe these should have pointer output so they can be overloaded
-      
+
       /* Convert some number of bits in a host order integer to an air order array */
       static void host_to_air(uint8_t host_order, char *air_order, int bits);
 
@@ -130,7 +130,7 @@ namespace gr {
 
       /* have we decoded the payload yet? */
       bool got_payload();
-      
+
       int get_type();
 
       /* decode the whole packet */
@@ -140,13 +140,13 @@ namespace gr {
 
       /* decode the packet header */
       virtual bool decode_header() = 0;
-      
+
       /* decode the packet header */
       virtual void decode_payload() = 0;
-            
+
       /* print packet information */
       virtual void print() = 0;
-      
+
       /* format payload for tun interface */
       virtual char *tun_format() = 0;
 
@@ -233,13 +233,13 @@ namespace gr {
 
       /* decode the classic packet header */
       virtual bool decode_header() = 0;
-        
+
       /* decode the classic packet header */
       virtual void decode_payload() = 0;
-        
+
       /* print classic packet information */
       virtual void print() = 0;
-        
+
       /* format payload for tun interface */
       virtual char *tun_format() = 0;
 
@@ -284,7 +284,7 @@ namespace gr {
       int get_channel( ) { return d_channel; }
     };
 
-#define LE_MAX_PDU_OCTETS 39
+#define LE_MAX_PDU_OCTETS 40
 #define LE_MAX_OCTETS     (1+4+LE_MAX_PDU_OCTETS+3)
 #define LE_MAX_SYMBOLS    (8*LE_MAX_OCTETS)
 
@@ -322,29 +322,51 @@ namespace gr {
 
       static int sniff_aa(char *stream, int stream_length, double freq);
 
+      static uint8_t air_to_host8_flip(char *, int );
+
       /* decode the packet header */
       virtual bool decode_header() = 0;
-       
+
       /* decode the packet header */
       virtual void decode_payload() = 0;
-             
+
       /* print packet information */
       virtual void print() = 0;
-       
+
       /* format payload for tun interface */
       virtual char *tun_format() = 0;
-       
+
       /* check to see if the packet has a header */
       virtual bool header_present() = 0;
 
       /* return the low-energy packet's AA */
       virtual uint32_t get_AA() = 0;
 
+      /* get the channel index - Nishant */
+      virtual bool get_index() = 0;
+
+      /* return PDU Length - Nishant */
+      virtual unsigned get_pdu_length() = 0;
+
+      /* return BD Addr string - Nishant */
+      virtual char * get_bd_string() = 0;
+
+      /* return BD Addr ints - Nishant */
+      virtual float *get_bd_ints() = 0;
+
+      /* return true if contact tracing packet - Nishant */
+      virtual bool contact_tracing() = 0;
+      /*return PDU type*/
+      virtual uint8_t get_PDU_type() =0;
+
+      /*return true if packet passes CRC check - Nishant*/
+      virtual bool le_crc_check() = 0;
+
       virtual int get_channel( ) = 0;
+
     };
 
-  } // namespace bluetooth
+  } // namespace bluetooth_nishant
 } // namespace gr
 
-#endif /* INCLUDED_GR_BLUETOOTH_PACKET_H */
-
+#endif /* INCLUDED_GR_BLUETOOTH_NISHANT_PACKET_H */

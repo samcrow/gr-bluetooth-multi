@@ -1,22 +1,22 @@
 /* -*- c++ -*- */
-/* 
+/*
  * Copyright 2013 Christopher D. Kilgour
- * Copyright 2008, 2009 Dominic Spill, Michael Ossmann                                                                                            
- * Copyright 2007 Dominic Spill                                                                                                                   
+ * Copyright 2008, 2009 Dominic Spill, Michael Ossmann
+ * Copyright 2007 Dominic Spill
  * Copyright 2005, 2006 Free Software Foundation, Inc.
- * 
+ *
  * This file is part of gr-bluetooth
- * 
+ *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
@@ -43,7 +43,7 @@ namespace gr {
 
       /* non-significant address part */
       uint8_t d_NAP;
-	
+
       /* packet header, one bit per char */
       char d_packet_header[18];
 
@@ -164,9 +164,11 @@ namespace gr {
       uint8_t  d_SN;
       uint8_t  d_MD;
       unsigned d_PDU_Length;
+      uint32_t d_crc;
 
       char    d_link_symbols[LE_MAX_SYMBOLS];
       uint8_t d_pdu[LE_MAX_PDU_OCTETS];
+      uint8_t d_pdu_full[LE_MAX_PDU_OCTETS+3];
 
     public:
       le_packet_impl(char *stream, int length, double freq=0.0);
@@ -174,27 +176,48 @@ namespace gr {
 
       /* decode the packet header */
       bool decode_header();
-      
+
       /* decode the packet header */
       void decode_payload();
-      
+
       /* print packet information */
       void print();
-      
+
       /* format payload for tun interface */
       char *tun_format();
-      
+
       /* check to see if the packet has a header */
       bool header_present();
 
       /* return the low-energy packet's AA */
       uint32_t get_AA() { return d_AA; }
 
+      /* get the channel index - Nishant */
+      bool get_index();
+
+      /* return PDU Length - Nishant */
+      unsigned get_pdu_length() { return d_PDU_Length;}
+
+      /* return BD Addr string - Nishant */
+      char * get_bd_string();
+
+      /* return BD Addr ints - Nishant */
+      float *get_bd_ints();
+
+      /* check if contact tracing beacon - Nishant */
+      bool contact_tracing();
+
+      /* implementation of LE CRC computation - Nishant */
+      uint32_t le_crc_calc();
+
+      /* check if calculated and packet CRC match - Nishant */
+      bool le_crc_check();
+
       int get_channel( ) { return d_channel; }
+      uint8_t get_PDU_type() { return d_PDU_Type;}
     };
 
   } // namespace bluetooth
 } // namespace gr
 
 #endif /* INCLUDED_BLUETOOTH_GR_BLUETOOTH_PACKET_IMPL_H */
-

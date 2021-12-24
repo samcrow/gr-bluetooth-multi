@@ -1,22 +1,22 @@
 /* -*- c++ -*- */
-/* 
+/*
  * Copyright 2013 Christopher D. Kilgour
  * Copyright 2008, 2009 Dominic Spill, Michael Ossmann
  * Copyright 2007 Dominic Spill
  * Copyright 2005, 2006 Free Software Foundation, Inc.
- * 
+ *
  * This file is part of gr-bluetooth
- * 
+ *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
@@ -29,6 +29,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "multi_sniffer_impl.h"
+#include <string.h>
 
 namespace gr {
   namespace bluetooth_nishant {
@@ -38,12 +39,12 @@ namespace gr {
 		fprintf(stderr, "Error: %s\n", s);
 		abort();
 	}
-	  
+
     multi_sniffer::sptr
     multi_sniffer::make(double sample_rate, double center_freq,
                         double squelch_threshold, bool tun)
     {
-      return gnuradio::get_initial_sptr (new multi_sniffer_impl(sample_rate, center_freq, 
+      return gnuradio::get_initial_sptr (new multi_sniffer_impl(sample_rate, center_freq,
                                                                 squelch_threshold, tun));
     }
 
@@ -58,7 +59,8 @@ namespace gr {
                        gr::io_signature::make (0, 0, 0))
     {
       d_tun = tun;
-      set_symbol_history(SYMBOLS_FOR_BASIC_RATE_HISTORY);
+      set_symbol_history(625);
+      //set_symbol_history(0);
 
       /* Tun interface */
       if (d_tun) {
@@ -84,30 +86,43 @@ namespace gr {
                               gr_vector_const_void_star& input_items,
                               gr_vector_void_star&       output_items )
     {
-      for (double freq = d_low_freq; freq <= d_high_freq; freq += 1e6) {   
-        gr_complex *ch_samples = new gr_complex[noutput_items+100000];
-        gr_vector_void_star btch( 1 );
-        btch[0] = ch_samples;
+      /*static int work_iter = 0;
+      work_iter++;
+      for (int i = 0; i < noutput_items; i++) {
+	gr_complex *sample = &((gr_complex*)input_items[0])[0];
+      	printf("WORKINGON %d %f %f\n", work_iter, sample[i].real(), sample[i].imag());
+      }*/
+      static unsigned int master_counter = 0;
+      //for (double freq = d_low_freq; freq <= d_high_freq; freq += 1e6) {
+	//printf("Enterthedragon");
+        double freq = d_center_freq;
+        float scale_factor = d_sample_rate/1000000.0;
         double on_channel_energy, snr;
-        int ch_count = channel_samples( freq, input_items, btch, on_channel_energy, history() );
-        bool brok; // = check_basic_rate_squelch(input_items);
+	snr = 1.0;
+	/* //Modified decoder//
         bool leok = brok = check_snr( freq, on_channel_energy, snr, input_items );
-
+	*/
+	bool brok;
+	bool leok = brok = true;
         /* number of symbols available */
         if (brok || leok) {
           int sym_length = history();
           char *symbols = new char[sym_length];
+		//printf("char is %2d bytes \n",sizeof(char));
           /* pointer to our starting place for sniff_ */
           char *symp = symbols;
-          gr_vector_const_void_star cbtch( 1 );
-          cbtch[0] = ch_samples;
-          int len = channel_symbols( cbtch, symbols, ch_count );
-          delete [] ch_samples;
-          
+          /*gr_vector_const_void_star cbtch( 1 );
+          cbtch[0] = ch_samples;*/ //Modified decoder
+          //int len = channel_symbols( cbtch, symbols, ch_count );
+	  int len = channel_symbols( input_items,symbols,history() ); //Modified decoder
+	  //printf("Number of symbols:%d\n",len);
+          //delete [] ch_samples;
+
           if (brok) {
-            int limit = ((len - SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE) < SYMBOLS_PER_BASIC_RATE_SLOT) ? 
-              (len - SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE) : SYMBOLS_PER_BASIC_RATE_SLOT;
-        
+            /*int limit = ((len - SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE) < SYMBOLS_PER_BASIC_RATE_SLOT) ?
+              (len - SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE) : SYMBOLS_PER_BASIC_RATE_SLOT;*/
+		  int limit = len;
+       		//printf("Limit:%d\n",limit);
             /* look for multiple packets in this slot */
             while (limit >= 0) {
               /* index to start of packet */
@@ -119,7 +134,7 @@ namespace gr {
 				if(step >= sym_length) error_out("Bad step");
                 symp   = &symp[step];
                 limit -= step;
-              } 
+              }
               else {
                 break;
               }
@@ -128,18 +143,31 @@ namespace gr {
 
           if (leok) {
             symp = symbols;
-            int limit = ((len - SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE) < SYMBOLS_PER_BASIC_RATE_SLOT) ? 
+            int limit = ((len - SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE) < SYMBOLS_PER_BASIC_RATE_SLOT) ?
               (len - SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE) : SYMBOLS_PER_BASIC_RATE_SLOT;
-
-            while (limit >= 0) {
+	    //printf("limit=%d",limit);
+            int step_counter = 0;
+	    while (limit >= 0) {
               int i = le_packet::sniff_aa(symp, limit, freq);
+	      //printf("i=%d\n",i);
               if (i >= 0) {
                 int step = i + SYMBOLS_PER_LOW_ENERGY_PREAMBLE_AA;
-				//printf("symp[%i], len-i = %i\n", i, len-i);
-                aa(&symp[i], len - i, freq, snr);
-                len   -= step;
+		unsigned packet_length = 0;
+		char *bd_filname;
+		float *bd_vals;
+		int packet_flag = 0;
+		//printf("symp[%i], len-i = %i\n", i, len-i);
+                //printf("#STARTPACKET:%d\n",i+step_counter);
+		aa(&symp[i], len - i, freq, snr,&packet_length,&bd_filname,&packet_flag,&bd_vals);
+		//printf("Filename=%s\n",bd_filname);
+#if 0
+#endif
+		//master_counter ++;
+                //printf("Start of packet:%d End of packet:%d\n",i,len-i);
+		len   -= step;
 				if(step >= sym_length) error_out("Bad step");
                 symp   = &symp[step];
+		step_counter += step;
                 limit -= step;
               }
               else {
@@ -148,33 +176,37 @@ namespace gr {
             }
           }
           delete [] symbols;
+//	  delete [] ch_samples;
         }
         else {
-          delete [] ch_samples;
+  //        delete [] ch_samples;
         }
-      }
+      //}
+      //printf("Cumulative count updated\n");
       d_cumulative_count += (int) d_samples_per_slot;
-      
-      /* 
+
+      /*
        * The runtime system wants to know how many output items we
        * produced, assuming that this is equal to the number of input
        * items consumed.  We tell it that we produced/consumed one
        * time slot of input items so that our next run starts one slot
        * later.
        */
+
+      //printf("# of output samples: %lf\n", d_samples_per_slot);
       return (int) d_samples_per_slot;
     }
 
     /* handle AC */
-    void 
+    void
     multi_sniffer_impl::ac(char *symbols, int len, double freq, double snr)
     {
-      /* native (local) clock in 625 us */	
+      /* native (local) clock in 625 us */
       uint32_t clkn = (int) (d_cumulative_count / d_samples_per_slot) & 0x7ffffff;
       classic_packet::sptr pkt = classic_packet::make(symbols, len, clkn, freq);
       uint32_t lap = pkt->get_LAP();
-
-      printf("time %6d, snr=%.1f, channel %2d, LAP %06x ", 
+	//printf("Blah\n");
+      printf("time %6d, snr=%.1f, channel %2d, LAP %06x ",
              clkn, snr, pkt->get_channel( ), lap);
 
       if (pkt->header_present()) {
@@ -185,7 +217,7 @@ namespace gr {
 
         if (pn->have_clk6() && pn->have_UAP()) {
           decode(pkt, pn, true);
-        } 
+        }
         else {
           discover(pkt, pn);
         }
@@ -197,22 +229,58 @@ namespace gr {
         if (lap == GIAC || lap == LIAC) {
           d_basic_rate_piconets.erase(lap);
         }
-      } 
+      }
       else {
         id(lap);
       }
     }
 
-    /* handle AA */
+    /* handle AA */ /*change return type to char - Nishant*/
     void
-    multi_sniffer_impl::aa(char *symbols, int len, double freq, double snr)
+    multi_sniffer_impl::aa(char *symbols, int len, double freq, double snr,unsigned* pdu_length,char **filname,int *flag,float **vals)
     {
       le_packet::sptr pkt = le_packet::make(symbols, len, freq);
       uint32_t clkn = (int) (d_cumulative_count / d_samples_per_slot) & 0x7ffffff;
-
+	//printf("samples_per_slot:%f\n",d_samples_per_slot);
       printf("time %6d, snr=%.1f, ", clkn, snr);
-      pkt->print( );
+      //pkt->print( );
 
+      if (pkt->get_index() == true && (pkt->get_PDU_type() == 0 || pkt->get_PDU_type() == 1 || pkt->get_PDU_type() == 2 || pkt->get_PDU_type() == 6))
+      {
+	      *filname = pkt->get_bd_string();
+	      *vals = pkt->get_bd_ints();
+	      //printf("File name:%s",filname);
+	      *pdu_length = pkt->get_pdu_length();
+	      //printf("Filename=%s\n",*filname);
+	      //if (pkt->contact_tracing())
+	      //{
+		//      printf("Contact Tracing: TRUE\n");
+          	if(pkt->le_crc_check())
+          	{
+			printf("CRC1\n");
+            		//*flag = 1;
+          	}
+          	else
+          	{
+            		printf("CRC0\n");
+          	}
+	      //}
+	      //else
+	      //{
+	//	      printf("Contact Tracing: FALSE\n");
+	  //    }
+	      //if(!(strcmp(*filname,"6be991a778d2"))){
+	      //if(!(strcmp(*filname,"50185da28e83")) || !(strcmp(*filname,"6b3c1f38b5fe"))){
+	      //if(!(strcmp(*filname,"50c901232152")) || !(strcmp(*filname,"5e8ef98b2bb9")) || !(strcmp(*filname,"7ad438bc0540"))){
+	      //if(!(strcmp(*filname,"79ccbc2f77a2")) || !(strcmp(*filname,"59fce2b0639b"))){
+	      //if(!(strcmp(*filname,"5ac52b09ae39"))){
+	      //if(!(strcmp(*filname,"71129a59bb92"))){
+	      /*
+	      if(!(strcmp(*filname,"4f23444052c3"))){
+	      *flag = 1;
+	      }*/
+      }
+      pkt->print();
       if (pkt->header_present()) {
         uint32_t aa = pkt->get_AA( );
         if (!d_low_energy_piconets[aa]) {
@@ -236,7 +304,7 @@ namespace gr {
 
     /* decode packets with headers */
     void multi_sniffer_impl::decode(classic_packet::sptr pkt,
-                                    basic_rate_piconet::sptr pn, 
+                                    basic_rate_piconet::sptr pn,
                                     bool first_run)
     {
       uint32_t clock; /* CLK of target piconet */
@@ -278,9 +346,9 @@ namespace gr {
       }
     }
 
-    void multi_sniffer_impl::decode(le_packet::sptr pkt, 
+    void multi_sniffer_impl::decode(le_packet::sptr pkt,
                                     low_energy_piconet::sptr pn) {
-      
+
     }
 
     /* work on UAP/CLK1-6 discovery */
@@ -297,7 +365,7 @@ namespace gr {
         recall(pn);
     }
 
-    void multi_sniffer_impl::discover(le_packet::sptr pkt, 
+    void multi_sniffer_impl::discover(le_packet::sptr pkt,
                                       low_energy_piconet::sptr pn) {
     }
 
@@ -306,14 +374,14 @@ namespace gr {
     {
       packet::sptr pkt;
       printf("Decoding queued packets\n");
-      
+
       while (pkt = pn->dequeue()) {
         classic_packet::sptr cpkt = boost::dynamic_pointer_cast<classic_packet>(pkt);
         printf("time %6d, channel %2d, LAP %06x ", cpkt->d_clkn,
                cpkt->get_channel(), cpkt->get_LAP());
         decode(cpkt, pn, false);
       }
-      
+
       printf("Finished decoding queued packets\n");
     }
 
@@ -356,12 +424,12 @@ namespace gr {
         d_basic_rate_piconets[lap] = basic_rate_piconet::make(lap);
       }
       pn = d_basic_rate_piconets[lap];
-	
+
       pn->set_UAP(uap);
       pn->set_NAP(nap);
       pn->set_offset(offset);
       //FIXME if this is a role switch, the offset can have an error of as
-      //much as 1.25 ms 
+      //much as 1.25 ms
     }
 
     /*
@@ -383,4 +451,3 @@ namespace gr {
 
   } /* namespace bluetooth */
 } /* namespace gr */
-

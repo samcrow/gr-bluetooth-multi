@@ -1,22 +1,22 @@
 /* -*- c++ -*- */
-/* 
+/*
  * Copyright 2013 Christopher D. Kilgour
  * Copyright 2008, 2009 Dominic Spill, Michael Ossmann
  * Copyright 2007 Dominic Spill
  * Copyright 2005, 2006 Free Software Foundation, Inc.
- * 
+ *
  * This file is part of gr-bluetooth
- * 
+ *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
@@ -76,16 +76,16 @@ namespace gr {
     /* Reverse the bits in a byte */
     uint8_t packet::reverse(char byte)
     {
-      return (byte & 0x80) >> 7 | (byte & 0x40) >> 5 | (byte & 0x20) >> 3 | 
-        (byte & 0x10) >> 1 | (byte & 0x08) << 1 | (byte & 0x04) << 3 | 
+      return (byte & 0x80) >> 7 | (byte & 0x40) >> 5 | (byte & 0x20) >> 3 |
+        (byte & 0x10) >> 1 | (byte & 0x08) << 1 | (byte & 0x04) << 3 |
         (byte & 0x02) << 5 | (byte & 0x01) << 7;
     }
 
     const uint8_t packet::WHITENING_DATA[] = {
-      1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 
-      1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 
-      0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 
-      1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 
+      1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0,
+      1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1,
+      0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0,
+      1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1,
       1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1
     };
 
@@ -117,7 +117,7 @@ namespace gr {
         host_order |= (air_order[i] << i);
       return host_order;
     }
-    
+
     uint32_t packet::air_to_host32(char *air_order, int bits)
     {
       int i;
@@ -161,7 +161,7 @@ namespace gr {
           fmt = LOW_ENERGY;
         }
       }
-      
+
       return retval;
     }
 
@@ -175,7 +175,7 @@ namespace gr {
     }
 
     // -------------------------------------------------------------------
-    
+
 
     /* initialize constant class member arrays */
     /* isn't it silly that this can't be done in the class declaration? */
@@ -198,7 +198,7 @@ namespace gr {
 
     const std::string classic_packet::TYPE_NAMES[] = {
       "NULL", "POLL", "FHS", "DM1", "DH1/2-DH1", "HV1", "HV2/2-EV3", "HV3/EV3/3-EV3",
-      "DV/3-DH1", "AUX1", "DM3/2-DH3", "DH3/3-DH3", "EV4/2-EV5", "EV5/3-EV5", 
+      "DV/3-DH1", "AUX1", "DM3/2-DH3", "DH3/3-DH3", "EV4/2-EV5", "EV5/3-EV5",
       "DM5/2-DH5", "DH5/3-DH5"
     };
 
@@ -249,14 +249,17 @@ namespace gr {
       /* Looks for an AC in the stream */
       int count;
       int max_distance = 2; // maximum number of bit errors to tolerate in preamble + trailer
-
+	//printf("Hello Stream Length:%d\n",stream_length);
       for( count=0; count<stream_length; count++ ) {
         char * symbols = &stream[count];
+	//printf("%d,",symbols[0]);
         // start of sync word (includes LSB of sync word)
         uint8_t preamble = air_to_host8( &symbols[0], 5 );
+	//printf("Preamble: %#04x\n",preamble);
         // MSB of LAP and 6-bit barker in 7 symbols
         uint16_t barker = air_to_host16( &symbols[61], 7 );
-        if ((PREAMBLE_DISTANCE[preamble] + BARKER_DISTANCE[barker]) 
+	//printf("Barker: %#04x\n",barker);
+        if ((PREAMBLE_DISTANCE[preamble] + BARKER_DISTANCE[barker])
             <= max_distance) {
           uint32_t LAP = air_to_host32( &symbols[38], 24 );
           if (check_ac( symbols, LAP )) {
@@ -647,7 +650,7 @@ namespace gr {
         case 13:/* EV5 */
           retval = EV5(clock);
           break;
-		
+
         case 5:/* HV1 */
           retval = HV(clock);
           break;
@@ -671,8 +674,8 @@ namespace gr {
 
       return retval;
     }
-    
-    
+
+
     /* verify the payload CRC */
     bool classic_packet_impl::payload_crc()
     {
@@ -764,7 +767,7 @@ namespace gr {
       d_payload_header_length = header_bytes;
       return true;
     }
-   
+
     /* DM 1/3/5 packet (and DV)*/
     int classic_packet_impl::DM(int clock)
     {
@@ -841,7 +844,7 @@ namespace gr {
       char *stream = d_symbols + 126;
       /* number of symbols remaining after access code and packet header */
       int size = d_length - 126;
-	
+
       switch(d_packet_type)
 	{
         case(9): /* AUX1 */
@@ -869,7 +872,7 @@ namespace gr {
         return 1; //FIXME should throw exception
 
       unwhiten(stream, d_payload, clock, bitlength, 18);
-	
+
       /* AUX1 has no CRC */
       if (d_packet_type == 9)
         return 1;
@@ -1083,7 +1086,7 @@ namespace gr {
           printf("bad HEC! %02x %02x %i ", UAP, d_UAP, air_to_host8(&d_packet_header[3], 4));
         }
       }
-	
+
       printf("failed to decode header\n");
       return false;
     }
@@ -1276,8 +1279,8 @@ namespace gr {
 
     // -------------------------------------------------------------------
 
-    le_packet::sptr 
-    le_packet::make(char *stream, int length, double freq) 
+    le_packet::sptr
+    le_packet::make(char *stream, int length, double freq)
     {
       return le_packet::sptr(new le_packet_impl(stream, length, freq));
     }
@@ -1299,7 +1302,7 @@ namespace gr {
           37,
           0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
           38,
-          11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 
+          11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
           27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
           39
         };
@@ -1332,120 +1335,120 @@ namespace gr {
     };
 
     const uint8_t le_packet::ACCESS_ADDRESS_DISTANCE_0[] = {
-      5, 6, 4, 5, 4, 5, 3, 4, 6, 7, 5, 6, 5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3, 
-      5, 6, 4, 5, 4, 5, 3, 4, 6, 7, 5, 6, 5, 6, 4, 5, 7, 8, 6, 7, 6, 7, 5, 6, 
-      5, 6, 4, 5, 4, 5, 3, 4, 6, 7, 5, 6, 5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3, 
-      5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3, 
-      5, 6, 4, 5, 4, 5, 3, 4, 6, 7, 5, 6, 5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3, 
-      5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 
-      3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 
-      6, 7, 5, 6, 5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 
-      3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3, 2, 3, 1, 2, 1, 2, 0, 1, 
-      3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 
+      5, 6, 4, 5, 4, 5, 3, 4, 6, 7, 5, 6, 5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3,
+      5, 6, 4, 5, 4, 5, 3, 4, 6, 7, 5, 6, 5, 6, 4, 5, 7, 8, 6, 7, 6, 7, 5, 6,
+      5, 6, 4, 5, 4, 5, 3, 4, 6, 7, 5, 6, 5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3,
+      5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3,
+      5, 6, 4, 5, 4, 5, 3, 4, 6, 7, 5, 6, 5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3,
+      5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4,
+      3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4,
+      6, 7, 5, 6, 5, 6, 4, 5, 4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4,
+      3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3, 2, 3, 1, 2, 1, 2, 0, 1,
+      3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4,
       3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3
     };
 
     const uint8_t le_packet::ACCESS_ADDRESS_DISTANCE_1[] = {
-      6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 5, 6, 4, 5, 4, 5, 3, 4, 
-      4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3, 
-      4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 7, 8, 6, 7, 6, 7, 5, 6, 
-      6, 7, 5, 6, 5, 6, 4, 5, 6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 
-      6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 5, 6, 4, 5, 4, 5, 3, 4, 
-      4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3, 
-      4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3, 
-      3, 4, 2, 3, 2, 3, 1, 2, 3, 4, 2, 3, 2, 3, 1, 2, 2, 3, 1, 2, 1, 2, 0, 1, 
-      6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 5, 6, 4, 5, 4, 5, 3, 4, 
-      4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3, 
+      6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 5, 6, 4, 5, 4, 5, 3, 4,
+      4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3,
+      4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 7, 8, 6, 7, 6, 7, 5, 6,
+      6, 7, 5, 6, 5, 6, 4, 5, 6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4,
+      6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 5, 6, 4, 5, 4, 5, 3, 4,
+      4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3,
+      4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3,
+      3, 4, 2, 3, 2, 3, 1, 2, 3, 4, 2, 3, 2, 3, 1, 2, 2, 3, 1, 2, 1, 2, 0, 1,
+      6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 5, 6, 4, 5, 4, 5, 3, 4,
+      4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3,
       4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2
     };
 
     const uint8_t le_packet::ACCESS_ADDRESS_DISTANCE_2[] = {
-      3, 2, 4, 3, 4, 3, 5, 4, 2, 1, 3, 2, 3, 2, 4, 3, 4, 3, 5, 4, 5, 4, 6, 5, 
-      3, 2, 4, 3, 4, 3, 5, 4, 4, 3, 5, 4, 5, 4, 6, 5, 3, 2, 4, 3, 4, 3, 5, 4, 
-      5, 4, 6, 5, 6, 5, 7, 6, 4, 3, 5, 4, 5, 4, 6, 5, 4, 3, 5, 4, 5, 4, 6, 5, 
-      3, 2, 4, 3, 4, 3, 5, 4, 5, 4, 6, 5, 6, 5, 7, 6, 4, 3, 5, 4, 5, 4, 6, 5, 
-      5, 4, 6, 5, 6, 5, 7, 6, 4, 3, 5, 4, 5, 4, 6, 5, 6, 5, 7, 6, 7, 6, 8, 7, 
-      5, 4, 6, 5, 6, 5, 7, 6, 2, 1, 3, 2, 3, 2, 4, 3, 1, 0, 2, 1, 2, 1, 3, 2, 
-      3, 2, 4, 3, 4, 3, 5, 4, 2, 1, 3, 2, 3, 2, 4, 3, 3, 2, 4, 3, 4, 3, 5, 4, 
-      2, 1, 3, 2, 3, 2, 4, 3, 4, 3, 5, 4, 5, 4, 6, 5, 3, 2, 4, 3, 4, 3, 5, 4, 
-      3, 2, 4, 3, 4, 3, 5, 4, 2, 1, 3, 2, 3, 2, 4, 3, 4, 3, 5, 4, 5, 4, 6, 5, 
-      3, 2, 4, 3, 4, 3, 5, 4, 4, 3, 5, 4, 5, 4, 6, 5, 3, 2, 4, 3, 4, 3, 5, 4, 
+      3, 2, 4, 3, 4, 3, 5, 4, 2, 1, 3, 2, 3, 2, 4, 3, 4, 3, 5, 4, 5, 4, 6, 5,
+      3, 2, 4, 3, 4, 3, 5, 4, 4, 3, 5, 4, 5, 4, 6, 5, 3, 2, 4, 3, 4, 3, 5, 4,
+      5, 4, 6, 5, 6, 5, 7, 6, 4, 3, 5, 4, 5, 4, 6, 5, 4, 3, 5, 4, 5, 4, 6, 5,
+      3, 2, 4, 3, 4, 3, 5, 4, 5, 4, 6, 5, 6, 5, 7, 6, 4, 3, 5, 4, 5, 4, 6, 5,
+      5, 4, 6, 5, 6, 5, 7, 6, 4, 3, 5, 4, 5, 4, 6, 5, 6, 5, 7, 6, 7, 6, 8, 7,
+      5, 4, 6, 5, 6, 5, 7, 6, 2, 1, 3, 2, 3, 2, 4, 3, 1, 0, 2, 1, 2, 1, 3, 2,
+      3, 2, 4, 3, 4, 3, 5, 4, 2, 1, 3, 2, 3, 2, 4, 3, 3, 2, 4, 3, 4, 3, 5, 4,
+      2, 1, 3, 2, 3, 2, 4, 3, 4, 3, 5, 4, 5, 4, 6, 5, 3, 2, 4, 3, 4, 3, 5, 4,
+      3, 2, 4, 3, 4, 3, 5, 4, 2, 1, 3, 2, 3, 2, 4, 3, 4, 3, 5, 4, 5, 4, 6, 5,
+      3, 2, 4, 3, 4, 3, 5, 4, 4, 3, 5, 4, 5, 4, 6, 5, 3, 2, 4, 3, 4, 3, 5, 4,
       5, 4, 6, 5, 6, 5, 7, 6, 4, 3, 5, 4, 5, 4, 6, 5
     };
 
     const uint8_t le_packet::ACCESS_ADDRESS_DISTANCE_3[] = {
-      4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 5, 6, 4, 5, 4, 5, 3, 4, 
-      4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3, 
-      6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 5, 6, 4, 5, 4, 5, 3, 4, 
-      4, 5, 3, 4, 3, 4, 2, 3, 6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 
-      6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 7, 8, 6, 7, 6, 7, 5, 6, 
-      6, 7, 5, 6, 5, 6, 4, 5, 3, 4, 2, 3, 2, 3, 1, 2, 2, 3, 1, 2, 1, 2, 0, 1, 
-      4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3, 
-      3, 4, 2, 3, 2, 3, 1, 2, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3, 
-      4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 5, 6, 4, 5, 4, 5, 3, 4, 
-      4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3, 
+      4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 5, 6, 4, 5, 4, 5, 3, 4,
+      4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3,
+      6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 5, 6, 4, 5, 4, 5, 3, 4,
+      4, 5, 3, 4, 3, 4, 2, 3, 6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4,
+      6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4, 7, 8, 6, 7, 6, 7, 5, 6,
+      6, 7, 5, 6, 5, 6, 4, 5, 3, 4, 2, 3, 2, 3, 1, 2, 2, 3, 1, 2, 1, 2, 0, 1,
+      4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 4, 5, 3, 4, 3, 4, 2, 3,
+      3, 4, 2, 3, 2, 3, 1, 2, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3,
+      4, 5, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 2, 3, 1, 2, 5, 6, 4, 5, 4, 5, 3, 4,
+      4, 5, 3, 4, 3, 4, 2, 3, 5, 6, 4, 5, 4, 5, 3, 4, 4, 5, 3, 4, 3, 4, 2, 3,
       6, 7, 5, 6, 5, 6, 4, 5, 5, 6, 4, 5, 4, 5, 3, 4
     };
 
     const uint8_t le_packet::ACCESS_HEADER_DISTANCE_LSB[] = {
-      0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 
-      2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 
-      2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 1, 1, 1, 1, 1, 1, 1, 2, 
-      2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 
-      2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 4, 
-      4, 4, 4, 4, 4, 4, 4, 5, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 
-      2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 2, 2, 2, 2, 2, 2, 2, 3, 
-      3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 
-      0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 
-      2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 
+      0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2,
+      2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3,
+      2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 1, 1, 1, 1, 1, 1, 1, 2,
+      2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4,
+      2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 4,
+      4, 4, 4, 4, 4, 4, 4, 5, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3,
+      2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 2, 2, 2, 2, 2, 2, 2, 3,
+      3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5,
+      0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2,
+      2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3,
       2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4
     };
 
     const uint8_t le_packet::ACCESS_HEADER_DISTANCE_MSB[] = {
-      1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-      1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 
-      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-      3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 
+      1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2,
+      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+      3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
       3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
     };
 
     const uint8_t le_packet::DATA_HEADER_DISTANCE_LSB[] = {
-      1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 
-      1, 0, 0, 0, 1, 0, 0, 0, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 
-      2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 
-      2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 
-      3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 
-      3, 2, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 
-      2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 3, 2, 2, 2, 3, 2, 2, 2, 
-      3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 
-      3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 
-      3, 2, 2, 2, 3, 2, 2, 2, 4, 3, 3, 3, 4, 3, 3, 3, 4, 3, 3, 3, 4, 3, 3, 3, 
+      1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,
+      1, 0, 0, 0, 1, 0, 0, 0, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1,
+      2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1,
+      2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1,
+      3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2,
+      3, 2, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1,
+      2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 3, 2, 2, 2, 3, 2, 2, 2,
+      3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2,
+      3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 2, 2,
+      3, 2, 2, 2, 3, 2, 2, 2, 4, 3, 3, 3, 4, 3, 3, 3, 4, 3, 3, 3, 4, 3, 3, 3,
       4, 3, 3, 3, 4, 3, 3, 3, 4, 3, 3, 3, 4, 3, 3, 3
     };
 
     const uint8_t le_packet::DATA_HEADER_DISTANCE_MSB[] = {
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-      2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 
-      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-      2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+      2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+      2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
       3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
     };
 
     const uint8_t le_packet::INDICES[] = {
-      93, 85, 16, 7, 100, 69, 38, 124, 89, 62, 54, 49, 103, 106, 21, 112, 33, 
-      58, 31, 77, 18, 40, 56, 23, 81, 11, 29, 117, 109, 72, 75, 43, 63, 50, 
+      93, 85, 16, 7, 100, 69, 38, 124, 89, 62, 54, 49, 103, 106, 21, 112, 33,
+      58, 31, 77, 18, 40, 56, 23, 81, 11, 29, 117, 109, 72, 75, 43, 63, 50,
       107, 113, 86, 8, 70, 125
     };
 
@@ -1477,7 +1480,7 @@ namespace gr {
         char hbuf[16];
         unsigned hi, wi;
 
-        // de-whiten 
+        // de-whiten
         for( hi=0, wi=INDICES[index]; hi<16; hi++, wi=(wi+1)%127 ) {
           hbuf[hi] = symbols[hi+40] ^ WHITENING_DATA[wi];
         }
@@ -1486,7 +1489,7 @@ namespace gr {
         uint8_t  header_msb = air_to_host8(&hbuf[8], 8);
 
         int preamble_distance = PREAMBLE_DISTANCE[preamble];
-        int header_distance   = phlsb[header_lsb] + phmsb[header_msb];       
+        int header_distance   = phlsb[header_lsb] + phmsb[header_msb];
         int distance          = preamble_distance + header_distance;
 
         int max_distance = 0;
@@ -1502,7 +1505,7 @@ namespace gr {
           aabyte = air_to_host8(&symbols[32], 8);
           aa_distance += ACCESS_ADDRESS_DISTANCE_3[aabyte];
           if (!aa_distance && distance) {
-            printf( "preamble_distance=%d, header_distance=%d, aa_distance=%d\n", 
+            printf( "preamble_distance=%d, header_distance=%d, aa_distance=%d\n",
                     preamble_distance, header_distance, aa_distance );
             if (preamble_distance) {
               printf( "preamble=0x%03x\n", preamble );
@@ -1526,6 +1529,15 @@ namespace gr {
       return -1;
     }
 
+    uint8_t le_packet::air_to_host8_flip(char * rx_order, int bits)
+    {
+      int i;
+      uint8_t host_order = 0;
+      for (i = 0; i < bits; i++)
+        host_order |= (rx_order[i] << (7-i));
+      return host_order;
+    }
+
     le_packet_impl::le_packet_impl(char *stream, int length, double freq)
       : packet(stream, length, freq)
     {
@@ -1544,6 +1556,7 @@ namespace gr {
       d_payload_length = 0;
 
       uint16_t header = air_to_host16(&d_link_symbols[40], 16);
+
       if (d_index >= 37) {
         d_PDU_Type   = (header >> 0) & 0xf;
         d_TxAdd      = (header >> 6) & 1;
@@ -1557,11 +1570,27 @@ namespace gr {
         d_MD         = (header >> 4) & 1;
         d_PDU_Length = (header >> 8) & 0x1f;
       }
-
+      d_pdu_full[0] = air_to_host8(&d_link_symbols[40], 8);
+      d_pdu_full[1] = air_to_host8(&d_link_symbols[48], 8);
+      //printf("d_pdu_full:%02x, %02x \n",d_pdu_full[0],d_pdu_full[1]);
       unsigned pi;
-      for( pi=0, i=56; i+8<LE_MAX_SYMBOLS; pi++, i+=8 ) {
+      for( pi=0, i=56; i+8 < LE_MAX_SYMBOLS; pi++, i+=8 ) {
         d_pdu[pi] = air_to_host8(&d_link_symbols[i], 8);
+        d_pdu_full[pi+2] = air_to_host8(&d_link_symbols[i], 8);
       }
+      d_crc = 0;
+      for (pi=0;pi<3;pi++)
+      {
+        d_crc=(d_crc<<8)|d_pdu_full[d_PDU_Length+2+pi];
+      }
+      printf("d_pdu_full:");
+      for (pi=0; pi < d_PDU_Length+2+3; ++pi)
+	      printf("%02x ",d_pdu_full[pi]);
+      printf("\n");
+      printf("d_pdu:");
+      for (pi=0; pi < d_PDU_Length+2+3; ++pi)
+	      printf("%02x ",d_pdu[pi]);
+      printf("\n");
     }
 
     le_packet_impl::~le_packet_impl( )
@@ -1572,26 +1601,88 @@ namespace gr {
     {
       return false; // FIXME: TODO
     }
-    
+
     void le_packet_impl::decode_payload()
     {
       // FIXME: TODO
     }
-           
+
+    uint32_t le_packet_impl::le_crc_calc()
+    {
+      uint8_t* buf = d_pdu_full;
+
+      uint8_t dst[3];
+      // initialize 24-bit shift register in "wire bit order"
+      // dst[0] = bits 23-16, dst[1] = bits 15-8, dst[2] = bits 7-0
+      dst[0] = 0xaa;
+      dst[1] = 0xaa;
+      dst[2] = 0xaa;
+
+      unsigned len = d_PDU_Length+2;
+      while (len--) {
+
+        uint8_t d = *(buf++);
+
+        for (uint8_t i = 1; i; i <<= 1, d >>= 1) {
+
+          // save bit 23 (highest-value), left-shift the entire register by one
+          uint8_t t = dst[0] & 0x01;         dst[0] >>= 1;
+          if (dst[1] & 0x01) dst[0] |= 0x80; dst[1] >>= 1;
+          if (dst[2] & 0x01) dst[1] |= 0x80; dst[2] >>= 1;
+
+          // if the bit just shifted out (former bit 23) and the incoming data
+          // bit are not equal (i.e. bit_out ^ bit_in == 1) => toggle tap bits
+          if (t != (d & 1)) {
+            // toggle register tap bits (=XOR with 1) according to CRC polynom
+            dst[2] ^= 0xDA; // 0b11011010 inv. = 0b01011011 ^= x^6+x^4+x^3+x+1
+            dst[1] ^= 0x60; // 0b01100000 inv. = 0b00000110 ^= x^10+x^9
+          }
+        }
+      }
+      unsigned pi;
+      uint32_t calc_crc = 0;
+      for (pi=0;pi<3;pi++)
+      {
+        calc_crc=(calc_crc<<8)|dst[pi];
+      }
+      return calc_crc;
+    }
+
+    /* check if calculated and packet CRC match - Nishant */
+    bool le_packet_impl::le_crc_check()
+    {
+      if (d_crc == le_crc_calc())
+      {
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+
     void le_packet_impl::print()
     {
       unsigned i;
 
       if (d_index >= 37) {
-        printf( "BTLE index=%02d, AA=%08x, PDUType=%d, TxAdd=%d, RxAdd=%d, Length=%d\n", 
+        printf( "BTLE index=%02d, AA=%08x, PDUType=%d, TxAdd=%d, RxAdd=%d, Length=%d\n",
                 d_index, d_AA, d_PDU_Type, d_TxAdd, d_RxAdd, d_PDU_Length );
         switch(d_PDU_Type) {
         case 0:
         case 2:
         case 4:
         case 6:
-          printf( "  AdvA=%02x%02x%02x%02x%02x%02x\n", 
+          printf( "  AdvA=%02x%02x%02x%02x%02x%02x\n",
                   d_pdu[0], d_pdu[1], d_pdu[2], d_pdu[3], d_pdu[4], d_pdu[5] );
+          printf("CRC Check : ");
+          //printf("d_crc=%06x, le_crc_calc=%06x",d_crc,le_crc_calc());
+          if(le_crc_check())
+          {
+            printf("Pass\n");
+          }
+          else{
+            printf("Fail\n");
+          }
           if (d_PDU_Type == 4) {
             printf( "\n  (char) ScanRspData=" );
           }
@@ -1659,21 +1750,91 @@ namespace gr {
         }
       }
       else {
-        printf( "BTLE index=%02d, AA=%08x, LLID=%d, NESN=%d, SN=%d, MD=%d, Length=%d\n", 
+        printf( "BTLE index=%02d, AA=%08x, LLID=%d, NESN=%d, SN=%d, MD=%d, Length=%d\n",
                 d_index, d_AA, d_LLID, d_NESN, d_SN, d_MD, d_PDU_Length );
       }
     }
-      
+
     char *le_packet_impl::tun_format()
     {
       return (char*)calloc(256,1); // FIXME: TODO
     }
-      
+
+    /* Get channel index - Nishant */
+    bool le_packet_impl::get_index()
+    {
+	   if (d_index >= 37)
+		  return true;
+	   else
+		  return false;
+    }
+
+    /* Get BD Addr string - Nishant */
+    char *le_packet_impl::get_bd_string(void)
+    {
+	    char* bd_buffer = new char[20];
+	    sprintf(bd_buffer,"%02x%02x%02x%02x%02x%02x",d_pdu[5],d_pdu[4],d_pdu[3],d_pdu[2],d_pdu[1],d_pdu[0]);
+	    return bd_buffer;
+    }
+
+    float *le_packet_impl::get_bd_ints(void)
+    {
+	   float* bd_buffer = new float[12];
+	   for(int b = 0; b<11; b+=2)
+	   {
+		  bd_buffer[b] = (float)d_pdu[5-(b/2)];
+		  bd_buffer[b+1] = 0.0;
+	   }
+	   return bd_buffer;
+    }
+
+
     bool le_packet_impl::header_present()
     {
       return false; // FIXME: TODO
     }
 
+    /* check if contact tracing beacon - Nishant */
+    bool le_packet_impl::contact_tracing(void)
+    {
+    	char *data_string = new char[d_PDU_Length*2 + 1];
+      unsigned i;
+      //char *y = data_string;
+      unsigned y=0;
+      for (i=6; i<d_PDU_Length; ++i)
+      {
+        sprintf(data_string+y,"%02x",d_pdu[i]);
+        y +=2;
+      }
+      //*y = '\0';
+      int data_len = y+1;
+      //printf("Data_Len=%d\n",data_len);
+      char comp_string[] = "02011a03036ffd17166ffd";
+      int compare_flag = 1;
+      if (data_len >= 23)
+      {
+        for (i=0;i < data_len-23;++i)
+        {
+          if(strncmp(data_string+i,comp_string,22)==0)
+          {
+            compare_flag = 0;
+            break;
+          }
+        }
+      }
+
+      delete data_string;
+      if (compare_flag)
+      {
+        return false;
+      }
+      else
+      {
+        return true;
+      }
+
+    }
+
+
   } /* namespace bluetooth */
 } /* namespace gr */
-
