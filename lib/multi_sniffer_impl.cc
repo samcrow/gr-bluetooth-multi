@@ -59,7 +59,7 @@ namespace gr {
                        gr::io_signature::make (0, 0, 0))
     {
       d_tun = tun;
-      set_symbol_history(625);
+      set_symbol_history(312);
       //set_symbol_history(0);
 
       /* Tun interface */
@@ -119,21 +119,22 @@ namespace gr {
           //delete [] ch_samples;
 
           if (brok) {
-            /*int limit = ((len - SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE) < SYMBOLS_PER_BASIC_RATE_SLOT) ?
-              (len - SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE) : SYMBOLS_PER_BASIC_RATE_SLOT;*/
+            // int limit = ((len - SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE) < SYMBOLS_PER_BASIC_RATE_SLOT) ? (len - SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE) : SYMBOLS_PER_BASIC_RATE_SLOT;
 		  int limit = len;
        		//printf("Limit:%d\n",limit);
             /* look for multiple packets in this slot */
-            while (limit >= 0) {
+            while (limit > 0) {
               /* index to start of packet */
               int i = classic_packet::sniff_ac(symp, limit);
               if (i >= 0) {
                 int step = i + SYMBOLS_PER_BASIC_RATE_SHORTENED_ACCESS_CODE;
-                ac(&symp[i], len - i, freq, snr);
-                len   -= step;
+                ac(&symp[i], limit - i, freq, snr);
+                //len   -= step;
 				if(step >= sym_length) error_out("Bad step");
-                symp   = &symp[step];
-                limit -= step;
+                //symp   = &symp[step];
+                symp += step;
+		limit -= step;
+		printf("Limit=%d,Len=%d,i=%d\n",limit,len,i);
               }
               else {
                 break;
